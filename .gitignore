@@ -1,0 +1,7 @@
+data.properties
+/target/
+.classpath
+.project
+.settings/
+test-output/
+src/main/resources/data.properties
