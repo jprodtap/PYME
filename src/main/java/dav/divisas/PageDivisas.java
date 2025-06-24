@@ -187,8 +187,7 @@ public class PageDivisas extends PagePortalPymes {
 
 			if (isValid(numAprova)) {
 
-				documentoTx = xpathNumDocumTxCon.replace("fechayhoraconvert", "").replace("MONEDA", "").replace("DOCID",
-						numAprova);
+				documentoTx = xpathNumDocumTxCon.replace("fechayhoraconvert", "").replace("MONEDA", "").replace("DOCID",numAprova);
 
 				if (this.element(documentoTx) == null)
 					Reporter.reportEvent(Reporter.MIC_FAIL, "El número de Aprobacion no se encontro: " + numAprova);
@@ -212,82 +211,9 @@ public class PageDivisas extends PagePortalPymes {
 
 				// Intenta encontrar el documento con la hora original
 				if (isValid(fecha) && isValid(hora)) {
-
-//							// Buscar botón "Siguiente"
-
+					
+					// Buscar botón "Siguiente"
 					documentoTx = SiguientePagina(fecha, hora);
-
-//							WebElement btnSiguiente = null;
-//
-//							btnSiguiente = this.element(By.xpath("//button[contains(text(),'Siguiente')]"));
-//
-//							if (isElementInteractable(btnSiguiente)) {
-//
-//								WebElement paginaElement = this.element(By.xpath("//*[@id='pagina']"));
-//
-//								// Obtiene la opción seleccionada
-//								String paginaActualStr = null;
-//								int paginaActual = 0;
-//								int totalPaginas = 0;
-//								Select dropdown = null;
-//								String[] paginas = null;
-//
-//								// Crea un objeto Select para manipularlo
-//								if (paginaElement != null) {
-//									dropdown = new Select(paginaElement);
-//									paginaActualStr = dropdown.getFirstSelectedOption().getText().trim();
-//								}
-//
-//								if (isValid(paginaActualStr)) {
-//									paginas = paginaActualStr.split("de");
-//									paginaActual = Integer.parseInt(paginas[0].trim());
-//									totalPaginas = Integer.parseInt(paginas[1].trim());
-//								}
-//
-//								do {
-//
-//									btnSiguiente = this.element(By.xpath("//button[contains(text(),'Siguiente')]"));
-//
-//									// Buscar la fecha y hora en la página actual
-//									List<WebElement> listaFecha = null;
-//									List<WebElement> listahora = null;
-//									listaFecha = this.findElements(By.xpath(xpathBuscarFechayHora.replace("fechayhoraconvert", fecha)));
-//									listahora = this.findElements(By.xpath(xpathBuscarFechayHora.replace("fechayhoraconvert", hora)));
-//
-//									// Si encuentra ambos, intenta obtener el documento
-//									if (listaFecha != null && listahora != null) {
-//										documentoTx = findDocumentWithTimeAfterDelay(fecha, hora);
-//										if (isValid(documentoTx)) {
-//											break; // Documento encontrado
-//										}
-//									}
-//
-//									paginaElement = this.element(By.xpath("//*[@id='pagina']"));
-//									// Crea un objeto Select para manipularlo
-//									dropdown = new Select(paginaElement);
-//
-//									// Obtiene la opción seleccionada
-//									paginaActualStr = dropdown.getFirstSelectedOption().getText().trim();
-//									paginas = paginaActualStr.split("de");
-//
-//									paginaActual = Integer.parseInt(paginas[0].trim());
-//
-//									// Verificamos si ya estamos en la última página
-//									if (paginaActual >= totalPaginas) {
-//										break;
-//									}
-//
-//									// Verificar si el botón siguiente está disponible
-//									btnSiguiente = this.element(By.xpath("//button[contains(text(),'Siguiente')]"));
-//
-//									if (isElementInteractable(btnSiguiente)) {
-//										this.click(btnSiguiente);
-//										DXCUtil.wait(10); // Espera a que cargue la siguiente página
-//									} else {
-//										break;
-//									}
-//								} while (isElementInteractable(btnSiguiente));
-//							}
 
 					if (!isValid(documentoTx))
 						documentoTx = findDocumentWithTimeAfterDelay(fecha, hora); // Esperar un minuto
@@ -315,9 +241,8 @@ public class PageDivisas extends PagePortalPymes {
 										if (!isValid(documentoTx)) {
 											// Si no se encuentra incluso después de los ajustes, muestra un mensaje
 											// deerror
-											Reporter.reportEvent(Reporter.MIC_FAIL,
-													"Error: Documento no encontrado con tiempos ajustados.");
-											SettingsRun.exitTestIteration();
+											Reporter.reportEvent(Reporter.MIC_FAIL,"Error: Documento no encontrado con tiempos ajustados.");
+//											SettingsRun.exitTestIteration();
 										}
 									}
 								}
@@ -576,13 +501,11 @@ public class PageDivisas extends PagePortalPymes {
 
 			String fechayHoraconver = null;
 
-			if (servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado")
-					&& !pendieteAprobar.contains("Pend")) {
+			if (servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado") && !pendieteAprobar.contains("Pend")) {
 
 				fechayHoraconver = fecha + " " + horaconvert;
 
-				obTNumDocumTxCon = this.element(
-						xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
+				obTNumDocumTxCon = this.element(xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
 				Reporter.write(fechayHoraconver);
 
 				if (obTNumDocumTxCon != null) {
@@ -592,8 +515,7 @@ public class PageDivisas extends PagePortalPymes {
 				if (isValid(horaconvert) && !horaconvert.equals("12"))
 					fechayHoraconver = fecha + " " + DXCUtil.convertirHoraSiPM(horaconvert);
 
-				obTNumDocumTxCon = this.element(
-						xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
+				obTNumDocumTxCon = this.element(xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
 				Reporter.write(fechayHoraconver);
 
 				if (obTNumDocumTxCon != null) {
@@ -601,11 +523,10 @@ public class PageDivisas extends PagePortalPymes {
 				}
 
 			}
-			if (!servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado")
-					&& pendieteAprobar.contains("Pend")) {
+			
+			if (!servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado") && pendieteAprobar.contains("Pend")) {
 
-				obTNumDocumTxCon = this.element(
-						xpathNumDocumTxCon3.replace("fechayhoraconvert", horaconvert).replace("MONEDA", moneda));
+				obTNumDocumTxCon = this.element(xpathNumDocumTxCon3.replace("fechayhoraconvert", horaconvert).replace("MONEDA", moneda));
 				Reporter.write(horaconvert);
 
 				if (obTNumDocumTxCon != null) {
@@ -613,13 +534,11 @@ public class PageDivisas extends PagePortalPymes {
 				}
 
 			} else {
-
+				
+				fechayHoraconver = fecha + " " + horaconvert;
 				fechayHoraconver = DXCUtil.convertirFecha_Y_HoraSiPM(fechayHoraconver);
 
-				obTNumDocumTxCon = this.element(
-						xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
-
-//				Reporter.write(fechayHoraconver);
+				obTNumDocumTxCon = this.element(xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
 
 				if (obTNumDocumTxCon != null) {
 					return obTNumDocumTxCon.getText();
@@ -640,8 +559,7 @@ public class PageDivisas extends PagePortalPymes {
 
 				Reporter.write(fechayHoraconver);
 
-				obTNumDocumTxCon = this.element(
-						xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
+				obTNumDocumTxCon = this.element(xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
 
 				if (obTNumDocumTxCon != null) {
 					return obTNumDocumTxCon.getText();
@@ -656,24 +574,7 @@ public class PageDivisas extends PagePortalPymes {
 		return null;
 	}
 
-	/**
-	 * Este metodo Obtiene el [Número de tx o Documento de la Tx]
-	 * 
-	 * @param fecha       Tx
-	 * @param horaconvert Tx
-	 * @return Retorna el [Número de tx o Documento de la Tx]
-	 * @throws Exception
-	 */
-//	public String findDocumentWithTime(String fecha, String horaconvert) throws Exception {
-//		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
-//		try {
-//			String fechayHora = fecha + " " + horaconvert;
-//			return this.element(xpathNumDocumTxCon3.replace("fechayhoraconvert", fechayHora).replace("MONEDA", moneda)).getText();
-//		} catch (Exception e) {
-//			return null;
-//		}
-//
-//	}
+	
 
 	/**
 	 * Este metodo Obtiene el [Número de tx o Documento de la Tx] con la fecha y
@@ -704,13 +605,10 @@ public class PageDivisas extends PagePortalPymes {
 		try {
 			DXCUtil.wait(1);
 
-			String Obje = xpathNumDocumTxCon.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda)
-					.replace("DOCID", documentoTx);
+			String Obje = xpathNumDocumTxCon.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda).replace("DOCID", documentoTx);
 
 			if (Obje != null && !isValid(documentoTx))
-				numAprova = this.element(
-						xpathNumDocumTxObt.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda))
-						.getText();
+				numAprova = this.element(xpathNumDocumTxObt.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda)).getText();
 
 			return Obje;
 
@@ -779,7 +677,6 @@ public class PageDivisas extends PagePortalPymes {
 
 		}
 
-//		DXCUtil.wait(1);
 		if (isElementInteractable(btnModalPopup)) {
 			Evidence.saveAllScreens("Alert", this);
 			this.click(btnModalPopup);
@@ -857,128 +754,9 @@ public class PageDivisas extends PagePortalPymes {
 
 		return msgResp;
 	}
-
+	
+	
 	// =========================================================================================================================================
-
-	/**
-	 * Metodo que retorna el mensaje de alerta si este existe en divisas. Si el
-	 * retorno es [null] es porque NO existe un mensaje de alerta.<br>
-	 * 
-	 * @return retorno es [null] es porque NO existe un mensaje de alerta
-	 * @throws Exception
-	 */
-//	public String getActiveIntAlert() throws Exception {
-//
-//		int contador = 1;
-//		String msgResp = null;
-//
-//		if (isElementInteractable(btnModalPopup)) {
-//			do {
-//				DXCUtil.wait(1);
-//				contador++;
-//			} while (this.element(btnModalPopup) != null && !this.isDisplayed(btnModalPopup)&& !this.isEnabled(btnModalPopup) && contador <= 10);
-//
-//			msgResp = this.getMsgAlertIfExist("AlertaModal");// cambiar el extraer mensaje popup
-//
-//		} else if (isElementInteractable(btnPopup)) {
-//			do {
-//				DXCUtil.wait(1);
-//				contador++;
-//			} while (!this.isDisplayed(btnPopup) && !this.isEnabled(btnPopup) && contador <= 10);
-//
-//			msgResp = this.getMsgAlertIfExist("mensaje");// cambiar el extraer mensaje popup
-//			
-//		} else if (isElementInteractable(AlertPopupAdver)) {
-//			
-//			DXCUtil.wait(1);
-//			msgResp = this.element(AlertPopupAdver).getAttribute("outerText");
-//
-//		} else {
-//			do {
-//				DXCUtil.wait(1);
-//				contador++;
-//			} while (this.element(btnPopup2) != null && !this.isDisplayed(btnPopup2) && !this.isEnabled(btnPopup2)&& contador <= 10);
-//
-//			msgResp = this.getMsgAlertIfExistxPath(Alermod);// cambiar el extraer mensaje popup
-//		}
-//
-//		if (isElementInteractable(btnModalPopup)) {
-//			Evidence.saveAllScreens("Alert", this);
-//		} else if (isElementInteractable(btnPopup2)) {
-//			Evidence.saveAllScreens("Alert", this);
-//		} else if (isElementInteractable(btnPopup) && isElementInteractable(cmpPopup)) {
-//			Evidence.saveAllScreens("Alert", this);
-//		} else if (isElementInteractable(AlertPopupAdver)) {
-//			Evidence.saveAllScreens("Alert", this);
-//
-//		}
-//
-//		return msgResp;
-//	}
-
-// =========================================================================================================================================
-
-	/**
-	 * Cierra el mensaje alerta - PopUP presentado en Divisas
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-//	public String closeActiveIntAlertConfirma() throws Exception {
-//		int contador = 1;
-//		String msgResp = null;
-//		
-//		do {
-//			DXCUtil.wait(4);
-//			contador++;
-//			if (contador >= 29) {
-//				if (this.element(sesionEx) != null) {
-//					String msg = this.element(sesionEx).getText();
-//					Evidence.save("msg");
-//					Reporter.reportEvent(Reporter.MIC_FAIL, msg);
-//				}
-//				return "TimeOut";
-//			}
-//			if (this.element(cmpPopup) != null && !this.isDisplayed(btnPopup) && !this.isEnabled(btnPopup)) {
-//				Evidence.save("AlertPopup");
-//			}
-//
-//		} while (this.element(btnPopup) == null && !this.isEnabled(btnPopup) && contador <= 10);
-//		
-//
-//		if (this.element("//*[@id='mensajeerror']") != null) {
-//			msgResp = this.getMsgAlertIfExist("mensajeerror");// cambiar el extraer mensaje popup
-//		}
-//		
-//		if (this.element("//*[@id='mensaje']") != null) {
-//			msgResp = this.getMsgAlertIfExist("mensaje");// cambiar el extraer mensaje popup
-//		}
-//
-//		if (this.element(Alermod) != null) {
-//			msgResp = this.getMsgAlertIfExistxPath(Alermod);// cambiar el extraer mensaje popup
-//		}
-//
-//		if (this.element(btnPopup) != null && !this.isDisplayed(cmpPopup) && !this.isEnabled(btnPopup)) {
-//			if (this.isDisplayed(btnPopup)) {
-//				Evidence.save("MensajeAlert");
-//				this.click(btnPopup);
-//			}
-//			
-//		} else if (this.element(btnPopup) != null && this.isDisplayed(btnPopup) && this.isEnabled(btnPopup)) {
-//			
-//			if (this.element(Alermod) != null) {
-//				msgResp = this.getMsgAlertIfExistxPath(Alermod);// cambiar el extraer mensaje popup
-//			}
-//			
-//			if (this.isDisplayed(btnPopup)) {			
-//				
-//				Evidence.save("MensajeAlert");
-//				this.click(btnPopup);
-//			}
-//		}
-//
-//		return msgResp;
-//	}
 
 	/**
 	 * Cierra el mensaje alerta (popup) que requiere confirmación en la sección de
