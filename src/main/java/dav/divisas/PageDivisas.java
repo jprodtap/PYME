@@ -169,95 +169,174 @@ public class PageDivisas extends PagePortalPymes {
 		return "";
 	}
 
+// =======================================================================================================================
+
+	public String obtenerNumeroTxDocumentoGeneral(String page) throws Exception {
+		String documentoTx = null;
+		String numAprovaLocal = numAprova;
+
+		// 1. Intentar por número de aprobación
+		if (!isValid(numAprovaLocal)) {
+			numAprovaLocal = SettingsRun.getTestData().getParameter("Número Aprobación");
+		}
+
+		if (isValid(numAprovaLocal)) {
+
+			documentoTx = xpathNumDocumTxCon.replace("fechayhoraconvert", "").replace("MONEDA", "").replace("DOCID",numAprovaLocal);
+
+			if (this.element(documentoTx) == null) {
+				Reporter.reportEvent(Reporter.MIC_FAIL, "El numero de Aprobacion no se encontro: " + numAprova);
+				documentoTx = null;
+				
+			}else {
+				
+				String objeto =  this.element(documentoTx).getText();
+				if (objeto.equals("Editar")) {
+					this.element(documentoTx).click();
+					return numAprovaLocal;
+					
+				}else {
+					return documentoTx;
+				}
+				
+			}
+			
+			if (isValid(documentoTx))
+				return documentoTx;
+		}
+
+		// 2. Intentar por fecha y hora (con varios intentos de ajuste)
+
+		String fecha = SettingsRun.getTestData().getParameter("Fecha tx");
+		String hora = SettingsRun.getTestData().getParameter("Hora tx");
+
+		if (isValid(fecha) && isValid(hora)) {
+
+			// Buscar botón "Siguiente"
+			documentoTx = SiguientePagina(fecha, hora, page);
+
+			String horaIntento = hora;
+			horaIntento = DXCUtil.horaAdd("HH:mm", hora, 1);
+
+			documentoTx = findDocumentWithTime(fecha, horaIntento, page);
+
+			if (isValid(documentoTx))
+				return documentoTx;
+
+			for (int minutosARestar = 0; minutosARestar <= 5; minutosARestar++) {
+				horaIntento = hora;
+				for (int i = 0; i < minutosARestar; i++)
+					horaIntento = DXCUtil.subtractOneMinute(horaIntento);
+				
+				
+				documentoTx = findDocumentWithTime(horaIntento);
+				
+				if (!isValid(documentoTx)) {
+					
+				documentoTx = findDocumentWithTime(fecha, horaIntento, page);
+				}
+
+				if (isValid(documentoTx))
+					return documentoTx;
+			}
+
+			Reporter.reportEvent(Reporter.MIC_FAIL, "Error: Documento no encontrado con tiempos ajustados.");
+		}
+
+		return documentoTx;
+	}
+
 	/**
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
 
-	public String ObtenerNumerodeTxDocumento2() throws Exception {
+//	public String ObtenerNumerodeTxDocumento2() throws Exception {
+//
+//		String documentoTx = null;
+//
+//		if (!isValid(numAprova)) {
+//
+//			numAprova = SettingsRun.getTestData().getParameter("Número Aprobación");
+//
+//			DXCUtil.wait(5);
+//
+//			if (isValid(numAprova)) {
+//
+//				documentoTx = xpathNumDocumTxCon.replace("fechayhoraconvert", "").replace("MONEDA", "").replace("DOCID",numAprova);
+//
+//				if (this.element(documentoTx) == null)
+//					Reporter.reportEvent(Reporter.MIC_FAIL, "El número de Aprobacion no se encontro: " + numAprova);
+//
+//			} else {
+//
+//				numAprova = null;
+//			}
+//
+//		}
+//
+//		// Busca por el numero de aprobacion y guarda en un array los datos del
+//		// registro, si lo encuentra
+//		if (!isValid(documentoTx)) {
+//
+//			if (SettingsRun.getTestData().parameterExist("Fecha tx")&& SettingsRun.getTestData().parameterExist("Hora tx")) {
+//
+//				String fecha = SettingsRun.getTestData().getParameter("Fecha tx").trim();
+//				String hora = SettingsRun.getTestData().getParameter("Hora tx").trim();
+//
+//				// Intenta encontrar el documento con la hora original
+//				if (isValid(fecha) && isValid(hora)) {
+//
+//					// Buscar botón "Siguiente"
+//					documentoTx = SiguientePagina(fecha, hora);
+//
+//					if (!isValid(documentoTx))
+//						documentoTx = findDocumentWithTimeAfterDelay(fecha, hora); // Esperar un minuto
+//
+//					if (!isValid(documentoTx)) {
+//						// Si no lo encuentra, resta un minuto y vuelve a intentarlo
+//						String modifiedHora1 = DXCUtil.subtractOneMinute(hora);
+//						documentoTx = findDocumentWithTime(fecha, modifiedHora1);
+//						if (!isValid(documentoTx)) {
+//							// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
+//							String modifiedHora2 = DXCUtil.subtractOneMinute(modifiedHora1);
+//							documentoTx = findDocumentWithTime(fecha, modifiedHora2);
+//							if (!isValid(documentoTx)) {
+//								// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
+//								String modifiedHora3 = DXCUtil.subtractOneMinute(modifiedHora2);
+//								documentoTx = findDocumentWithTime(fecha, modifiedHora3);
+//								if (!isValid(documentoTx)) {
+//									// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
+//									String modifiedHora4 = DXCUtil.subtractOneMinute(modifiedHora3);
+//									documentoTx = findDocumentWithTime(fecha, modifiedHora4);
+//									if (!isValid(documentoTx)) {
+//										// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
+//										String modifiedHora5 = DXCUtil.subtractOneMinute(modifiedHora4);
+//										documentoTx = findDocumentWithTime(fecha, modifiedHora5);
+//										if (!isValid(documentoTx)) {
+//											// Si no se encuentra incluso después de los ajustes, muestra un mensaje
+//											// deerror
+//											Reporter.reportEvent(Reporter.MIC_FAIL,
+//													"Error: Documento no encontrado con tiempos ajustados.");
+////											SettingsRun.exitTestIteration();
+//										}
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		return documentoTx;
+//
+//	}
 
-		String documentoTx = null;
-
-		if (!isValid(numAprova)) {
-
-			numAprova = SettingsRun.getTestData().getParameter("Número Aprobación");
-
-			DXCUtil.wait(5);
-
-			if (isValid(numAprova)) {
-
-				documentoTx = xpathNumDocumTxCon.replace("fechayhoraconvert", "").replace("MONEDA", "").replace("DOCID",numAprova);
-
-				if (this.element(documentoTx) == null)
-					Reporter.reportEvent(Reporter.MIC_FAIL, "El número de Aprobacion no se encontro: " + numAprova);
-
-			} else {
-
-				numAprova = null;
-			}
-
-		}
-
-		// Busca por el numero de aprobacion y guarda en un array los datos del
-		// registro, si lo encuentra
-		if (!isValid(documentoTx)) {
-
-			if (SettingsRun.getTestData().parameterExist("Fecha tx")
-					&& SettingsRun.getTestData().parameterExist("Hora tx")) {
-
-				String fecha = SettingsRun.getTestData().getParameter("Fecha tx").trim();
-				String hora = SettingsRun.getTestData().getParameter("Hora tx").trim();
-
-				// Intenta encontrar el documento con la hora original
-				if (isValid(fecha) && isValid(hora)) {
-					
-					// Buscar botón "Siguiente"
-					documentoTx = SiguientePagina(fecha, hora);
-
-					if (!isValid(documentoTx))
-						documentoTx = findDocumentWithTimeAfterDelay(fecha, hora); // Esperar un minuto
-
-					if (!isValid(documentoTx)) {
-						// Si no lo encuentra, resta un minuto y vuelve a intentarlo
-						String modifiedHora1 = DXCUtil.subtractOneMinute(hora);
-						documentoTx = findDocumentWithTime(fecha, modifiedHora1);
-						if (!isValid(documentoTx)) {
-							// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-							String modifiedHora2 = DXCUtil.subtractOneMinute(modifiedHora1);
-							documentoTx = findDocumentWithTime(fecha, modifiedHora2);
-							if (!isValid(documentoTx)) {
-								// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-								String modifiedHora3 = DXCUtil.subtractOneMinute(modifiedHora2);
-								documentoTx = findDocumentWithTime(fecha, modifiedHora3);
-								if (!isValid(documentoTx)) {
-									// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-									String modifiedHora4 = DXCUtil.subtractOneMinute(modifiedHora3);
-									documentoTx = findDocumentWithTime(fecha, modifiedHora4);
-									if (!isValid(documentoTx)) {
-										// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-										String modifiedHora5 = DXCUtil.subtractOneMinute(modifiedHora4);
-										documentoTx = findDocumentWithTime(fecha, modifiedHora5);
-										if (!isValid(documentoTx)) {
-											// Si no se encuentra incluso después de los ajustes, muestra un mensaje
-											// deerror
-											Reporter.reportEvent(Reporter.MIC_FAIL,"Error: Documento no encontrado con tiempos ajustados.");
-//											SettingsRun.exitTestIteration();
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return documentoTx;
-
-	}
-
-	public String SiguientePagina(String fecha, String hora) throws Exception {
+	public String SiguientePagina(String fecha, String hora, String page) throws Exception {
+		
+		String servicio = SettingsRun.getTestData().getParameter("Servicio");
 		// Buscar botón "Siguiente"
 		WebElement btnSiguiente = null;
 
@@ -302,17 +381,26 @@ public class PageDivisas extends PagePortalPymes {
 				String horaconver = null;
 
 				String[] horaes = hora.split(":");
-				if (isValid(hora) && !horaes[0].equals("12"))
+				
+				if (isValid(hora) && !horaes[0].equals("12") && !servicio.equals("Consulta Tx Internacionales Validar Estado"))
 					horaconver = DXCUtil.convertirHoraSiPM(hora);
 
 				else
+					
 					horaconver = hora;
 
 				listahora = this.findElements(By.xpath(xpathBuscarFechayHora.replace("fechayhoraconvert", horaconver)));
 
+				
 				// Si encuentra ambos, intenta obtener el documento
 				if (listaFecha != null && listahora != null) {
-					documentoTx = findDocumentWithTimeAfterDelay(fecha, hora);
+					
+					documentoTx = findDocumentWithTime(hora);
+					
+					if (!isValid(documentoTx)) {
+						
+					documentoTx = findDocumentWithTimeAfterDelay(fecha, hora, page);
+					}
 					if (isValid(documentoTx)) {
 						// Documento encontrado
 						return documentoTx;
@@ -357,125 +445,124 @@ public class PageDivisas extends PagePortalPymes {
 	 * @throws Exception
 	 */
 
-	public String ObtenerNumerodeTxDocumento() throws Exception {
-
-		String documentoTx = null;
-
-		if (!isValid(numAprova)) {
-
-			numAprova = SettingsRun.getTestData().getParameter("Número Aprobación");
-
-			DXCUtil.wait(5);
-
-			if (isValid(numAprova)) {
-
-				documentoTx = xpathNumDocumTxCon.replace("fechayhoraconvert", "").replace("MONEDA", "").replace("DOCID",
-						numAprova);
-
-				if (this.element(documentoTx) == null)
-					Reporter.reportEvent(Reporter.MIC_FAIL, "El numero de Aprobacion no se encontro: " + numAprova);
-
-			} else {
-
-				numAprova = null;
-			}
-
-		}
-
-		if (!isValid(numAprova)) {
-
-//			String fecha = SettingsRun.getTestData().getParameter("Fecha tx").trim();
-			String hora = SettingsRun.getTestData().getParameter("Hora tx").trim();
-			Reporter.reportEvent(Reporter.MIC_INFO, "Hora de la Tx : " + hora);
-
-			// Intenta encontrar el registro con la hora original
-			documentoTx = findDocumentWithTime(hora);
-
-			if (documentoTx == null) {
-				// Intenta encontrar el registro con la hora original modificada 1 minuto antes
-				String hora2 = DXCUtil.subtractOneMinute(hora);
-//				Reporter.write(hora2);
-				documentoTx = findDocumentWithTime(hora2);
-			}
-
-			if (documentoTx == null) {
-				// Intenta encontrar el registro con la hora MODIFICADA
-				String horaM = DXCUtil.horaAdd("HH:mm", hora, 3);
-				documentoTx = findDocumentWithTime(horaM); // Esperar un minuto
-				Evidence.save("Modulo - Documentos Y Formularios");
-				if (documentoTx == null) {
-					// Si no lo encuentra, resta un minuto y vuelve a intentarlo
-					String modifiedHora1 = DXCUtil.subtractOneMinute(horaM);
-					documentoTx = findDocumentWithTime(modifiedHora1);
-					if (documentoTx == null) {
-						// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-						String modifiedHora2 = DXCUtil.subtractOneMinute(modifiedHora1);
-						documentoTx = findDocumentWithTime(modifiedHora2);
-						if (documentoTx == null) {
-							// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-							String modifiedHora3 = DXCUtil.subtractOneMinute(modifiedHora2);
-							documentoTx = findDocumentWithTime(modifiedHora3);
-							if (documentoTx == null) {
-								// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-								String modifiedHora4 = DXCUtil.subtractOneMinute(modifiedHora3);
-								documentoTx = findDocumentWithTime(modifiedHora4);
-								if (documentoTx == null) {
-									// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-									String modifiedHora5 = DXCUtil.subtractOneMinute(modifiedHora4);
-									documentoTx = findDocumentWithTime(modifiedHora5);
-									if (documentoTx == null) {
-										String modifiedHora6 = DXCUtil.subtractOneMinute(modifiedHora5);
-										documentoTx = findDocumentWithTime(modifiedHora6);
-										if (documentoTx == null) {
-											// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-											String modifiedHora7 = DXCUtil.subtractOneMinute(modifiedHora6);
-											documentoTx = findDocumentWithTime(modifiedHora7);
-											if (documentoTx == null) {
-												// Si no se encuentra incluso después de los ajustes, muestra un mensaje
-												// de error
-												return "Error: Documento no encontrado con tiempos ajustados.";
-
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
-		}
-
-		contador = 0;
-
-		WebElement documenTxabuscar = null;
-
-		do {
-			contador++;
-			DXCUtil.wait(3);
-			documenTxabuscar = this.element(documentoTx);
-			if (contador >= 30) {
-				this.getDriver().switchTo().defaultContent();
-				return "No se encuentra TX en Documentos Y Formularios";
-			}
-		} while (documenTxabuscar == null || !documenTxabuscar.isDisplayed());
-
-		// Almacena el numero de Aprobacion de la tx
-		if (isValid(numAprova))
-			SettingsRun.getTestData().setParameter("Número Aprobación", numAprova);
-
-		this.click(documenTxabuscar);
-
-		return documentoTx;
-
-	}
+//	public String ObtenerNumerodeTxDocumento() throws Exception {
+//
+//		String documentoTx = null;
+//
+//		if (!isValid(numAprova)) {
+//
+//			numAprova = SettingsRun.getTestData().getParameter("Número Aprobación");
+//
+//			DXCUtil.wait(5);
+//
+//			if (isValid(numAprova)) {
+//
+//				documentoTx = xpathNumDocumTxCon.replace("fechayhoraconvert", "").replace("MONEDA", "").replace("DOCID",numAprova);
+//
+//				if (this.element(documentoTx) == null)
+//					Reporter.reportEvent(Reporter.MIC_FAIL, "El numero de Aprobacion no se encontro: " + numAprova);
+//
+//			} else {
+//
+//				numAprova = null;
+//			}
+//
+//		}
+//
+//		if (!isValid(numAprova)) {
+//
+////			String fecha = SettingsRun.getTestData().getParameter("Fecha tx").trim();
+//			String hora = SettingsRun.getTestData().getParameter("Hora tx").trim();
+//			Reporter.reportEvent(Reporter.MIC_INFO, "Hora de la Tx : " + hora);
+//
+//			// Intenta encontrar el registro con la hora original
+//			documentoTx = findDocumentWithTime(hora);
+//
+//			if (documentoTx == null) {
+//				// Intenta encontrar el registro con la hora original modificada 1 minuto antes
+//				String hora2 = DXCUtil.subtractOneMinute(hora);
+////				Reporter.write(hora2);
+//				documentoTx = findDocumentWithTime(hora2);
+//			}
+//
+//			if (documentoTx == null) {
+//				// Intenta encontrar el registro con la hora MODIFICADA
+//				String horaM = DXCUtil.horaAdd("HH:mm", hora, 3);
+//				documentoTx = findDocumentWithTime(horaM); // Esperar un minuto
+//				Evidence.save("Modulo - Documentos Y Formularios");
+//				if (documentoTx == null) {
+//					// Si no lo encuentra, resta un minuto y vuelve a intentarlo
+//					String modifiedHora1 = DXCUtil.subtractOneMinute(horaM);
+//					documentoTx = findDocumentWithTime(modifiedHora1);
+//					if (documentoTx == null) {
+//						// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
+//						String modifiedHora2 = DXCUtil.subtractOneMinute(modifiedHora1);
+//						documentoTx = findDocumentWithTime(modifiedHora2);
+//						if (documentoTx == null) {
+//							// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
+//							String modifiedHora3 = DXCUtil.subtractOneMinute(modifiedHora2);
+//							documentoTx = findDocumentWithTime(modifiedHora3);
+//							if (documentoTx == null) {
+//								// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
+//								String modifiedHora4 = DXCUtil.subtractOneMinute(modifiedHora3);
+//								documentoTx = findDocumentWithTime(modifiedHora4);
+//								if (documentoTx == null) {
+//									// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
+//									String modifiedHora5 = DXCUtil.subtractOneMinute(modifiedHora4);
+//									documentoTx = findDocumentWithTime(modifiedHora5);
+//									if (documentoTx == null) {
+//										String modifiedHora6 = DXCUtil.subtractOneMinute(modifiedHora5);
+//										documentoTx = findDocumentWithTime(modifiedHora6);
+//										if (documentoTx == null) {
+//											// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
+//											String modifiedHora7 = DXCUtil.subtractOneMinute(modifiedHora6);
+//											documentoTx = findDocumentWithTime(modifiedHora7);
+//											if (documentoTx == null) {
+//												// Si no se encuentra incluso después de los ajustes, muestra un mensaje
+//												// de error
+//												return "Error: Documento no encontrado con tiempos ajustados.";
+//
+//											}
+//										}
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//
+//		}
+//
+//		contador = 0;
+//
+//		WebElement documenTxabuscar = null;
+//
+//		do {
+//			contador++;
+//			DXCUtil.wait(3);
+//			documenTxabuscar = this.element(documentoTx);
+//			if (contador >= 30) {
+//				this.getDriver().switchTo().defaultContent();
+//				return "No se encuentra TX en Documentos Y Formularios";
+//			}
+//		} while (documenTxabuscar == null || !documenTxabuscar.isDisplayed());
+//
+//		// Almacena el numero de Aprobacion de la tx
+//		if (isValid(numAprova))
+//			SettingsRun.getTestData().setParameter("Número Aprobación", numAprova);
+//
+//		this.click(documenTxabuscar);
+//
+//		return documentoTx;
+//
+//	}
 
 	// ============================================[findDocumentWithTimeAfterDelay]===========================================================================
 
-	public String findDocumentWithTimeAfterDelay(String fecha, String horaconvert) throws Exception {
+	public String findDocumentWithTimeAfterDelay(String fecha, String horaconvert, String page) throws Exception {
 		// Convierte minutos a milisegundos
-		return findDocumentWithTime(fecha, horaconvert);
+		return findDocumentWithTime(fecha, horaconvert, page);
 	}
 
 	// ============================================[findDocumentWithTime]===========================================================================
@@ -490,7 +577,7 @@ public class PageDivisas extends PagePortalPymes {
 	 * @return Número de transacción o documento, o null si ocurre un error
 	 * @throws Exception en caso de error en el procesamiento
 	 */
-	public String findDocumentWithTime(String fecha, String horaconvert) throws Exception {
+	public String findDocumentWithTime(String fecha, String horaconvert, String page) throws Exception {
 
 		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
 		String servicio = SettingsRun.getTestData().getParameter("Servicio");
@@ -512,10 +599,11 @@ public class PageDivisas extends PagePortalPymes {
 					return obTNumDocumTxCon.getText();
 				}
 
-				if (isValid(horaconvert) && !horaconvert.equals("12"))
+				if (isValid(horaconvert) && !horaconvert.equals("12") && !servicio.equals("Consulta Tx Internacionales Validar Estado"))
 					fechayHoraconver = fecha + " " + DXCUtil.convertirHoraSiPM(horaconvert);
 
-				obTNumDocumTxCon = this.element(xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
+				obTNumDocumTxCon = this.element(
+						xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
 				Reporter.write(fechayHoraconver);
 
 				if (obTNumDocumTxCon != null) {
@@ -523,8 +611,8 @@ public class PageDivisas extends PagePortalPymes {
 				}
 
 			}
-			
-			if (!servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado") && pendieteAprobar.contains("Pend")) {
+
+			if (!servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado")&& pendieteAprobar.contains("Pend") && page.equals("Aprobaciones")) {
 
 				obTNumDocumTxCon = this.element(xpathNumDocumTxCon3.replace("fechayhoraconvert", horaconvert).replace("MONEDA", moneda));
 				Reporter.write(horaconvert);
@@ -534,9 +622,11 @@ public class PageDivisas extends PagePortalPymes {
 				}
 
 			} else {
-				
-				fechayHoraconver = fecha + " " + horaconvert;
-				fechayHoraconver = DXCUtil.convertirFecha_Y_HoraSiPM(fechayHoraconver);
+
+				fechayHoraconver = horaconvert;
+				if (isValid(horaconvert)&&!servicio.equals("Consulta Tx Internacionales Validar Estado"))
+				fechayHoraconver = DXCUtil.convertirHoraSiPM(fechayHoraconver);
+				Reporter.write(fechayHoraconver);
 
 				obTNumDocumTxCon = this.element(xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
 
@@ -551,6 +641,7 @@ public class PageDivisas extends PagePortalPymes {
 				String[] horaSepara = fechayHoraSepara[1].split(":");
 
 				if (isValid(horaconvert) && !horaSepara[0].equals("12"))
+
 					fechayHoraconver = fecha + " " + DXCUtil.convertirHoraSiPM(fechayHoraSepara[1]);
 
 				else
@@ -559,7 +650,8 @@ public class PageDivisas extends PagePortalPymes {
 
 				Reporter.write(fechayHoraconver);
 
-				obTNumDocumTxCon = this.element(xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
+				obTNumDocumTxCon = this.element(
+						xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
 
 				if (obTNumDocumTxCon != null) {
 					return obTNumDocumTxCon.getText();
@@ -574,8 +666,6 @@ public class PageDivisas extends PagePortalPymes {
 		return null;
 	}
 
-	
-
 	/**
 	 * Este metodo Obtiene el [Número de tx o Documento de la Tx] con la fecha y
 	 * Hora si son necesarios
@@ -588,7 +678,8 @@ public class PageDivisas extends PagePortalPymes {
 	public String findDocumentWithTime(String horaconvert) throws Exception {
 
 		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
-
+		String servicio = SettingsRun.getTestData().getParameter("Servicio");
+		
 		String documentoTx = "";
 		String fechayHoraconver = "";
 
@@ -596,7 +687,7 @@ public class PageDivisas extends PagePortalPymes {
 			documentoTx = numAprova;
 
 		String[] horaes = horaconvert.split(":");
-		if (isValid(horaconvert) && !horaes[0].equals("12"))
+		if (isValid(horaconvert) && !horaes[0].equals("12") && !servicio.equals("Consulta Tx Internacionales Validar Estado"))
 			fechayHoraconver = DXCUtil.convertirHoraSiPM(horaconvert);
 
 		else
@@ -607,11 +698,23 @@ public class PageDivisas extends PagePortalPymes {
 
 			String Obje = xpathNumDocumTxCon.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda).replace("DOCID", documentoTx);
 
-			if (Obje != null && !isValid(documentoTx))
-				numAprova = this.element(xpathNumDocumTxObt.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda)).getText();
-
-			return Obje;
-
+			WebElement ObjetodocumentoTx =null;
+			
+			ObjetodocumentoTx = this.element(Obje);
+			if (ObjetodocumentoTx == null)
+				 Obje = xpathNumDocumTxObt.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda);
+			
+		     	ObjetodocumentoTx = this.element(Obje);
+			if (!isElementPresentAndNotInteractable(ObjetodocumentoTx))
+				documentoTx = ObjetodocumentoTx.getText();
+			if (isValid(documentoTx)&&!documentoTx.contains(".")&&!documentoTx.contains(",")) {
+				
+			numAprova = documentoTx;
+			return documentoTx ;
+			}else {
+				return null;
+			}
+			
 		} catch (Exception e) {
 
 			return null;
@@ -754,8 +857,7 @@ public class PageDivisas extends PagePortalPymes {
 
 		return msgResp;
 	}
-	
-	
+
 	// =========================================================================================================================================
 
 	/**

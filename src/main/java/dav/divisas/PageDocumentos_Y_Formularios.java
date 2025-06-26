@@ -183,18 +183,135 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 	private static final String Inicial = "Inicial", Devolucion = "Devolución";
 
-//	static String numAprova = null;
-
 	int contador = 0;
 
-// ========================================[getNumAprInterna]===============================================================================
+// ========================================[EmpresaReceptora]===============================================================================
 
-//	/**
-//	 * Llama el dato de numero de aprobacion desde la transaccion
-//	 */
-//	public void SetNumAprInterna(String numAproTx) {
-//		numAprova = numAproTx;
-//	}
+	// Datos de la Empresa Recetora
+
+	public String tipodeidentificacionReceptora;
+	public String numerodeidentificacionReceptora;
+	public String digitodeverificacionReceptora;
+	public String nombreorazonsocialReceptora;
+	public String codigopaisReceptora;
+	public String codigodepartamentoReptora;
+	public String codigociudadReptora;
+	public String codigoCIIUReptora;
+	public String telefonoReptora;
+	public String direccionReptora;
+	public String correoReptora;
+	public String sectorReptora;
+	public String tipodeempresaReptora;
+	public String superintendenciaReptora;
+	public String actividadReptora;
+	public String tipoderegimenReptora;
+	public String naturalezaReptora;
+
+	/**
+	 * Datos Formularios del EmpresaReceptora a agregar o Actualizar
+	 * 
+	 * @param tipoIdentificacion
+	 * @param numeroIdentificacion
+	 * @param digitoVerificacion
+	 * @param nombreRazonSocial
+	 * @param codigoPais
+	 * @param codigoDepartamento
+	 * @param codigoCiudad
+	 * @param codigoCIIU
+	 * @param correoElectronico
+	 * @param sector
+	 * @param tipoEmpresa
+	 * @param superintendencia
+	 * @param naturaleza
+	 * @param telefono
+	 * @param direccion
+	 */
+	public void EmpresaReceptora(String tipoIdentificacion, String numeroIdentificacion, String digitoVerificacion,
+			String nombreRazonSocial, String codigoPais, String codigoDepartamento, String codigoCiudad,
+			String codigoCIIU, String telefono, String direccion, String correo, String sector, String tipoEmpresa,
+			String superintendencia, String actividad, String tipoRegimen, String naturaleza) {
+
+		this.tipodeidentificacionReceptora = tipoIdentificacion;
+		this.numerodeidentificacionReceptora = numeroIdentificacion;
+		this.digitodeverificacionReceptora = digitoVerificacion;
+		this.nombreorazonsocialReceptora = nombreRazonSocial;
+		this.codigopaisReceptora = codigoPais;
+		this.codigodepartamentoReptora = codigoDepartamento;
+		this.codigociudadReptora = codigoCiudad;
+		this.codigoCIIUReptora = codigoCIIU;
+		this.telefonoReptora = telefono;
+		this.direccionReptora = direccion;
+		this.correoReptora = correo;
+		this.sectorReptora = sector;
+		this.tipodeempresaReptora = tipoEmpresa;
+		this.superintendenciaReptora = superintendencia;
+		this.actividadReptora = actividad;
+		this.tipoderegimenReptora = tipoRegimen;
+		this.naturalezaReptora = naturaleza;
+	}
+// ========================================[Inversionista]===============================================================================
+
+	public String identificacionInversionista;
+	public String numerodeidentificacionInversionista;
+	public String digitodeverificacionInversionista;
+	public String nombreorazonsocialInversionista;
+
+	public String codigoPaisInversionista;
+	public String codigoDepartamentoInversionista;
+	public String codigociudadInversionista;
+	public String codigoCIIUInversionista;
+
+	public String correoElectronicoInversionista;
+	public String sectorInversionista;
+	public String tipodeempresaInversionista;
+	public String superintendenciaInversionista;
+	public String naturalezaInversionista;
+
+	public String telefonoInversionista;
+	public String direccionInversionista;
+
+	/**
+	 * Datos Formularios del Inversionista a agregar o Actualizar
+	 * 
+	 * @param tipoIdentificacion
+	 * @param numeroIdentificacion
+	 * @param digitoVerificacion
+	 * @param nombreRazonSocial
+	 * @param codigoPais
+	 * @param codigoDepartamento
+	 * @param codigoCiudad
+	 * @param codigoCIIU
+	 * @param correoElectronico
+	 * @param sector
+	 * @param tipoEmpresa
+	 * @param superintendencia
+	 * @param naturaleza
+	 * @param telefono
+	 * @param direccion
+	 */
+	public void Inversionista(String tipoIdentificacion, String numeroIdentificacion, String digitoVerificacion,
+			String nombreRazonSocial, String codigoPais, String codigoDepartamento, String codigoCiudad,
+			String codigoCIIU, String correoElectronico, String sector, String tipoEmpresa, String superintendencia,
+			String naturaleza, String telefono, String direccion) {
+
+		this.identificacionInversionista = tipoIdentificacion;
+		this.numerodeidentificacionInversionista = numeroIdentificacion;
+		this.digitodeverificacionInversionista = digitoVerificacion;
+		this.nombreorazonsocialInversionista = nombreRazonSocial;
+		this.codigoPaisInversionista = codigoPais;
+		this.codigoDepartamentoInversionista = codigoDepartamento;
+
+		this.codigociudadInversionista = codigoCiudad;
+		this.codigoCIIUInversionista = codigoCIIU;
+
+		this.correoElectronicoInversionista = correoElectronico;
+		this.sectorInversionista = sector;
+		this.tipodeempresaInversionista = tipoEmpresa;
+		this.superintendenciaInversionista = superintendencia;
+		this.naturalezaInversionista = naturaleza;
+		this.telefonoInversionista = telefono;
+		this.direccionInversionista = direccion;
+	}
 
 // ============================================[ModuloDocumetosYFormularios]===========================================================================
 
@@ -211,7 +328,8 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 		msg = validarAlertDocuc();
 
-		if (isValid(msg) && !msg.contains("En este módulo puede visualizar las operaciones")&& !msg.contains("Los campos que no se presentan en la declaración de cambio serán autocompletados"))
+		if (isValid(msg) && !msg.contains("En este módulo puede visualizar las operaciones")
+				&& !msg.contains("Los campos que no se presentan en la declaración de cambio serán autocompletados"))
 			return msg;
 
 //		String tipoPrueba = SettingsRun.getTestData().getParameter("Tipo prueba").trim();
@@ -299,7 +417,8 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 //
 //		}
 
-		msg = ObtenerNumerodeTxDocumento();
+		msg = obtenerNumeroTxDocumentoGeneral("Documentos y Formularios");
+//		msg = ObtenerNumerodeTxDocumento();
 
 //		if (!isValid(numAprova)) {
 //
@@ -404,7 +523,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 // ============================================[DatosDocumetosYFormularios]===========================================================================
 
-	
 	/**
 	 * Metodo Realiza el flujo completo y llenado de los datos de Documetos Y
 	 * Formularios
@@ -466,7 +584,8 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				return "No se presento el campo Concepto de la transferencia";
 			}
 
-		} while (this.element(listConceptodelatransferencia) == null && !this.isDisplayed(listConceptodelatransferencia)&& !this.isSelected(listConceptodelatransferencia) && !this.isEnabled(listConceptodelatransferencia));
+		} while (this.element(listConceptodelatransferencia) == null && !this.isDisplayed(listConceptodelatransferencia)
+				&& !this.isSelected(listConceptodelatransferencia) && !this.isEnabled(listConceptodelatransferencia));
 
 		Evidence.save("Campos-Documentos");
 
@@ -486,12 +605,13 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 			String cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
 
 			if (cambiarConcepto.equals("SI")) {
-				String conceptoAcambiar = SettingsRun.getTestData().getParameter("Concepto de la transferencia A Cambiar");
+				String conceptoAcambiar = SettingsRun.getTestData()
+						.getParameter("Concepto de la transferencia A Cambiar");
 				conceptosCambiario = conceptoAcambiar;
-				
+
 				msg = this.selectListItem(listConceptosCambiario, conceptoAcambiar);
 				Evidence.save("Campo-Seleccione Concepto de la transferencia");
-				
+
 				if (isValid(msg) && !msg.contains("Valor no encontrado")) {
 					Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 					this.click(btnEnviar);
@@ -500,7 +620,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 						return msg;
 					}
 				}
-				
+
 			}
 
 		} else {
@@ -673,7 +793,8 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 			Evidence.save("Descripción de la operación");
 
-			String cambiarlistnumeralOperacion_Numeral1 = SettingsRun.getTestData().getParameter("Cambiar Numeral cambiario 1");
+			String cambiarlistnumeralOperacion_Numeral1 = SettingsRun.getTestData()
+					.getParameter("Cambiar Numeral cambiario 1");
 			String numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
 			String cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
 
@@ -718,26 +839,27 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 					break;
 				}
 
-				// ----------------[EMPRESA Receptora o Administrador(Portafolio)]--------------------------------
+				// ----------------[EMPRESA Receptora o
+				// Administrador(Portafolio)]--------------------------------
 
 				if (Portafolio) {
-					String tipodeidentificacionReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de identificación");
-					String numerodeidentificacionReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Número de identificación");
-					String digitodeverificacionReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Dígito de verificación");
-					String nombreorazonsocialReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Nombre o razón social");
-					String codigopaisReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código país");
-					String codigodepartamentoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código departamento");
-					String codigociudadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código ciudad");
-					String codigoCIIUReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código CIIU");
-					String telefonoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Teléfono");
-					String direccionReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Dirección");
-					String correoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Correo electrónico");
-					String sectorReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Sector");
-					String tipodeempresaReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de empresa");
-					String superintendenciaReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Superintendencia de vigilancia");
-					String actividadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Actividad");
-					String tipoderegimenReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de régimen");
-					String naturalezaReptora = SettingsRun.getTestData().getParameter("Empresa receptora  - Naturaleza");
+//					String tipodeidentificacionReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de identificación");
+//					String numerodeidentificacionReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Número de identificación");
+//					String digitodeverificacionReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Dígito de verificación");
+//					String nombreorazonsocialReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Nombre o razón social");
+//					String codigopaisReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código país");
+//					String codigodepartamentoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código departamento");
+//					String codigociudadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código ciudad");
+//					String codigoCIIUReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código CIIU");
+//					String telefonoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Teléfono");
+//					String direccionReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Dirección");
+//					String correoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Correo electrónico");
+//					String sectorReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Sector");
+//					String tipodeempresaReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de empresa");
+//					String superintendenciaReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Superintendencia de vigilancia");
+//					String actividadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Actividad");
+//					String tipoderegimenReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de régimen");
+//					String naturalezaReptora = SettingsRun.getTestData().getParameter("Empresa receptora  - Naturaleza");
 
 					if (!isValid(tipodeidentificacionReceptora)) {
 						tipodeidentificacionReceptora = "NIT";
@@ -821,46 +943,45 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 				if (Inversionista) {
 
-					String identificacionInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Tipo de identificación");
-					String numerodeidentificacionInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Número de identificación");
-					String digitodeverificacionInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Dígito de verificación");
-					String nombreorazonsocialInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Nombre o razón social");
+//					String identificacionInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Tipo de identificación");
+//					String numerodeidentificacionInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Número de identificación");
+//					String digitodeverificacionInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Dígito de verificación");
+//					String nombreorazonsocialInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Nombre o razón social");
+//
+//					String codigoPaisInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Código país");
+//					String codigoDepartamentoInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Código departamento");
+//					String codigociudadInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Código ciudad");
+//					String codigoCIIUInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Código CIIU");
+//
+//					String correoElectronicoInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Correo electrónico");
+//					String sectorInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Sector");
+//					String tipodeempresaInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Tipo de empresa");
+//					String superintendenciaInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Superintendencia de vigilancia");
+//					String naturalezaInversionista = SettingsRun.getTestData()
+//							.getParameter("Identificación del inversionista - Naturaleza");
+//
+//					String telefonoInversionista = "";
+//					String direccionInversionista = "";
 
-					String codigoPaisInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Código país");
-					String codigoDepartamentoInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Código departamento");
-					String codigociudadInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Código ciudad");
-					String codigoCIIUInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Código CIIU");
-
-					String correoElectronicoInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Correo electrónico");
-					String sectorInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Sector");
-					String tipodeempresaInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Tipo de empresa");
-					String superintendenciaInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Superintendencia de vigilancia");
-					String naturalezaInversionista = SettingsRun.getTestData()
-							.getParameter("Identificación del inversionista - Naturaleza");
-
-					String telefonoInversionista = "";
-					String direccionInversionista = "";
-
-					if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Teléfono"))
-
-						telefonoInversionista = SettingsRun.getTestData()
-								.getParameter("Identificación del inversionista - Teléfono");
-
-					if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Teléfono"))
-						direccionInversionista = SettingsRun.getTestData()
-								.getParameter("Identificación del inversionista - Dirección");
+//					if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Teléfono"))
+//
+//						telefonoInversionista = SettingsRun.getTestData().getParameter("Identificación del inversionista - Teléfono");
+//
+//					if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Teléfono"))
+//						direccionInversionista = SettingsRun.getTestData()
+//								.getParameter("Identificación del inversionista - Dirección");
 
 					if (!isValid(identificacionInversionista)) {
 						identificacionInversionista = "NIT";
@@ -1102,11 +1223,14 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 					} else {
 
-						String nombreDeudorAcredor = this.element(campInputdescripcionOperacion_NombreDeudorAcredor).getAttribute("value");
+						String nombreDeudorAcredor = this.element(campInputdescripcionOperacion_NombreDeudorAcredor)
+								.getAttribute("value");
 
-						String deudorAcredorTipoIdentificacion = this.selectListObtenerDatoseleccionado(campSeletListaTipoIdentificacion);
+						String deudorAcredorTipoIdentificacion = this
+								.selectListObtenerDatoseleccionado(campSeletListaTipoIdentificacion);
 
-						String deudorAcredorNumeroIdentificacion = this.element(campInputNumeroIdentificacion).getAttribute("value");
+						String deudorAcredorNumeroIdentificacion = this.element(campInputNumeroIdentificacion)
+								.getAttribute("value");
 
 						String digitoVerificacion = this.element(campInputDigitoVerificacion).getAttribute("value");
 
@@ -1116,7 +1240,8 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 						String valorMoneda = this.element(campInputValorMoneda).getAttribute("value");
 
-						String tasadeCambioMonedaEstipulada = this.element(campInputTasadeCambioMonedaEstipulada).getAttribute("value");
+						String tasadeCambioMonedaEstipulada = this.element(campInputTasadeCambioMonedaEstipulada)
+								.getAttribute("value");
 
 					}
 				}
@@ -1173,7 +1298,8 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 				if (!isValid(numeroDeposito)) {
 					Evidence.save("Se presento el Numero Deposito");
-					Reporter.reportEvent(Reporter.MIC_INFO,"Se presento el campo Numero Deposito y el campo en la data es nulo o vacio ");
+					Reporter.reportEvent(Reporter.MIC_INFO,
+							"Se presento el campo Numero Deposito y el campo en la data es nulo o vacio ");
 				}
 
 				contador = 0;
@@ -1372,27 +1498,28 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 		Reporter.reportEvent(Reporter.MIC_PASS, "Se adjunta soporter y / o modificacion de los datos");
 
 		Evidence.save("Cargue de Archivos");
-		
+
 		this.click(btnEnviar);
-				
+
 		contador = 0;
-		
+
 		do {
-			
+
 			msg = this.getMsgAlertIfExistxPath("//*[@id='myModal']");
-			
+
 		} while (!isValid(msg) && contador <= 5);
 
 		if (isValid(msg)) {
 			Reporter.reportEvent(Reporter.MIC_PASS, msg);
 			DXCUtil.wait(3);
-			if (msg.contains("Documentos enviados exitosamente. Davivienda validará la información recibida y en caso de presentar inconsistencias informará vía correo electrónico. Por favor haga seguimiento de su operación en la opción de consultas y verifique el estado de su trámite.")) {
+			if (msg.contains(
+					"Documentos enviados exitosamente. Davivienda validará la información recibida y en caso de presentar inconsistencias informará vía correo electrónico. Por favor haga seguimiento de su operación en la opción de consultas y verifique el estado de su trámite.")) {
 				msg = this.closeActiveIntAlert();
 			}
 		}
-		
+
 		msg = this.closeActiveIntAlert();
-		
+
 		if (isValid(msg)) {
 			Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 		}

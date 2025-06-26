@@ -134,7 +134,8 @@ public class PageAprobacionInter extends PageDivisas {
 //		}
 		
 		if (!isValid(documentoTx)) 
-		documentoTx = ObtenerNumerodeTxDocumento2();
+			documentoTx = obtenerNumeroTxDocumentoGeneral("Aprobaciones");
+//		documentoTx = ObtenerNumerodeTxDocumento2();
 		
 		/*
 		 * Encuentra el registro por numero de documento Si encuentra el registro
@@ -151,7 +152,10 @@ public class PageAprobacionInter extends PageDivisas {
 			xpathfilaLocator = filaLocator.replace("I", String.valueOf(contador)).replace("documentoTx", documentoTx);
 			
 			if (this.element(xpathfilaLocator) != null) {
-
+				// Almacena el numero de Aprobacion de la tx
+				if (isValid(documentoTx))
+					SettingsRun.getTestData().setParameter("Número Aprobación", documentoTx);
+				
 				xpathcheckboxFila = checkboxFila.replace("I", String.valueOf(contador));
 
 				xpathtimeLimiteAprobacion = timeLimiteAprobacion.replace("I", String.valueOf(contador));

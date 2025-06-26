@@ -271,7 +271,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 //		}
 
 		if (!isValid(documentoTx)) 
-		documentoTx = ObtenerNumerodeTxDocumento2();
+		documentoTx = obtenerNumeroTxDocumentoGeneral("Consultas");
+//		documentoTx = ObtenerNumerodeTxDocumento2();
 		
 		WebElement compararElementos = null;
 		contador = 0;
@@ -584,12 +585,14 @@ public class PageConsultatxInternacional extends PageDivisas {
 					if (isValid(msg))
 						Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 				}
+			
+			Evidence.save("Filtros ingresados");
 
 			this.click(btnBuscarxpath);
 
 			DXCUtil.wait(12);
 
-			Evidence.saveAllScreens("Registros Encontrados", this);
+			Evidence.saveAllScreens("Parametros de búsqueda encontrados", this);
 		}
 
 	}

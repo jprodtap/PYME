@@ -206,7 +206,7 @@ public class PageEnviarTransInternacional extends PageDivisas {
 			if (!DatosDavivienda.IS_RISKMOTOR)
 				this.validacionSaldosStratus(servicio, tipoIdEm, nitEmpre, tipoProd, numeroCuenta, true);
 
-			DXCUtil.wait(7);
+			DXCUtil.wait(5);
 
 			this.click(radiobutton);
 
@@ -219,6 +219,7 @@ public class PageEnviarTransInternacional extends PageDivisas {
 
 		this.getJse().executeScript("document.body.style.zoom ='100%';");
 
+		DXCUtil.wait(1);
 		this.click(btnSiguiente);
 
 		this.ErrorSesionExpirada();
