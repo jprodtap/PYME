@@ -89,53 +89,9 @@ public class PageAprobacionInter extends PageDivisas {
 		}
 		
 		
-
-//		String documentoTx = SettingsRun.getTestData().getParameter("Número Aprobación").trim();
-//
-//		// si realiza la consulta de pendiente con proceso guardar sin aprobar realiza
-//		// la busqueda del docmentoTx con la hora exacta
-//		if (primeroGuardar || !isValid(documentoTx)) {
-//			String fecha = SettingsRun.getTestData().getParameter("Fecha tx").trim();
-//			String hora = SettingsRun.getTestData().getParameter("Hora tx").trim();
-//
-//			// Intenta encontrar el documento con la hora original
-//			documentoTx = findDocumentWithTimeAfterDelay(fecha, hora); // Esperar un minuto
-//
-//			if (!isValid(documentoTx)) {
-//				// Si no lo encuentra, resta un minuto y vuelve a intentarlo
-//				String modifiedHora1 = DXCUtil.subtractOneMinute(hora);
-//				documentoTx = findDocumentWithTime(fecha, modifiedHora1);
-//				if (!isValid(documentoTx)) {
-//					// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-//					String modifiedHora2 = DXCUtil.subtractOneMinute(modifiedHora1);
-//					documentoTx = findDocumentWithTime(fecha, modifiedHora2);
-//					if (!isValid(documentoTx)) {
-//						// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-//						String modifiedHora3 = DXCUtil.subtractOneMinute(modifiedHora2);
-//						documentoTx = findDocumentWithTime(fecha, modifiedHora3);
-//						if (!isValid(documentoTx)) {
-//							// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-//							String modifiedHora4 = DXCUtil.subtractOneMinute(modifiedHora3);
-//							documentoTx = findDocumentWithTime(fecha, modifiedHora4);
-//							if (!isValid(documentoTx)) {
-//								// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-//								String modifiedHora5 = DXCUtil.subtractOneMinute(modifiedHora4);
-//								documentoTx = findDocumentWithTime(fecha, modifiedHora5);
-//								if (!isValid(documentoTx)) {
-//									// Si no se encuentra incluso después de los ajustes, muestra un mensaje de error
-//									System.out.println("Error: Document not found with adjusted times.");
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//
-//		}
 		
 		if (!isValid(documentoTx)) 
 			documentoTx = obtenerNumeroTxDocumentoGeneral("Aprobaciones");
-//		documentoTx = ObtenerNumerodeTxDocumento2();
 		
 		/*
 		 * Encuentra el registro por numero de documento Si encuentra el registro
@@ -240,32 +196,6 @@ public class PageAprobacionInter extends PageDivisas {
 	}
 
 
-//==========================================================================================================================================================
 
-
-//	public String findDocumentWithTimeAfterDelay(String fecha, String horaconvert) throws Exception {
-//		// Convierte minutos a milisegundos
-//		return findDocumentWithTime(fecha, horaconvert);
-//	}
-
-//==========================================================================================================================================================
-
-//	/**
-//	 * Este metodo Obtiene el [Número de tx o Documento de la Tx]
-//	 * @param fecha Tx
-//	 * @param horaconvert Tx
-//	 * @return Retorna el [Número de tx o Documento de la Tx]
-//	 * @throws Exception
-//	 */
-//	public String findDocumentWithTime(String fecha, String horaconvert) throws Exception {
-//		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
-//		try {
-//			String fechayHora = fecha + " " + horaconvert;
-//			return this.element(xpathNumDocumTxCon3.replace("fechayhoraconvert", fechayHora).replace("MONEDA", moneda)).getText();
-//		} catch (Exception e) {
-//			return null;
-//		}
-//
-//	}
 //==========================================================================================================================================================
 }
