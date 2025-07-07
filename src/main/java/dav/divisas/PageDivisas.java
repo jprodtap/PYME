@@ -171,7 +171,7 @@ public class PageDivisas extends PagePortalPymes {
 
 // =======================================================================================================================
 
-	public String obtenerNumeroTxDocumentoGeneral(String page) throws Exception {
+	public String obtenerNumeroTxDocumentoGeneral(String tipoPrueba,String servicio,String page,String fechaTx,String horaTx,String moneda) throws Exception {
 		String documentoTx = null;
 		String numAprovaLocal = numAprova;
 
@@ -207,33 +207,31 @@ public class PageDivisas extends PagePortalPymes {
 
 		// 2. Intentar por fecha y hora (con varios intentos de ajuste)
 
-		String fecha = SettingsRun.getTestData().getParameter("Fecha tx");
-		String hora = SettingsRun.getTestData().getParameter("Hora tx");
 
-		if (isValid(fecha) && isValid(hora)) {
+		if (isValid(fechaTx) && isValid(horaTx)) {
 
 			// Buscar botón "Siguiente"
-			documentoTx = SiguientePagina(fecha, hora, page);
+			documentoTx = SiguientePagina(tipoPrueba,servicio, fechaTx, horaTx, moneda ,page);
 
-			String horaIntento = hora;
-			horaIntento = DXCUtil.horaAdd("HH:mm", hora, 1);
+			String horaIntento = horaTx;
+			horaIntento = DXCUtil.horaAdd("HH:mm", horaTx, 1);
 
-			documentoTx = findDocumentWithTime(fecha, horaIntento, page);
+			documentoTx = findDocumentWithTime(tipoPrueba,servicio,fechaTx, horaIntento,moneda,page);
 
 			if (isValid(documentoTx))
 				return documentoTx;
 
 			for (int minutosARestar = 0; minutosARestar <= 5; minutosARestar++) {
-				horaIntento = hora;
+				horaIntento = horaTx;
 				for (int i = 0; i < minutosARestar; i++)
 					horaIntento = DXCUtil.subtractOneMinute(horaIntento);
 				
 				
-				documentoTx = findDocumentWithTime(horaIntento);
+				documentoTx = findDocumentWithTime(servicio,horaIntento,moneda);
 				
 				if (!isValid(documentoTx)) {
 					
-				documentoTx = findDocumentWithTime(fecha, horaIntento, page);
+				documentoTx = findDocumentWithTime(tipoPrueba,servicio,fechaTx, horaIntento,moneda ,page);
 				}
 
 				if (isValid(documentoTx))
@@ -248,9 +246,8 @@ public class PageDivisas extends PagePortalPymes {
 
 
 
-	public String SiguientePagina(String fecha, String hora, String page) throws Exception {
+	public String SiguientePagina(String pendieteAprobar,String servicio, String fechaTx, String horaTx,String moneda,String page) throws Exception {
 		
-		String servicio = SettingsRun.getTestData().getParameter("Servicio");
 		// Buscar botón "Siguiente"
 		WebElement btnSiguiente = null;
 
@@ -289,19 +286,19 @@ public class PageDivisas extends PagePortalPymes {
 				List<WebElement> listaFecha = null;
 				List<WebElement> listahora = null;
 
-				if (isValid(fecha))
-					listaFecha = this.findElements(By.xpath(xpathBuscarFechayHora.replace("fechayhoraconvert", fecha)));
+				if (isValid(fechaTx))
+					listaFecha = this.findElements(By.xpath(xpathBuscarFechayHora.replace("fechayhoraconvert", fechaTx)));
 
 				String horaconver = null;
 
-				String[] horaes = hora.split(":");
+				String[] horaes = horaTx.split(":");
 				
-				if (isValid(hora) && !horaes[0].equals("12") && !servicio.equals("Consulta Tx Internacionales Validar Estado"))
-					horaconver = DXCUtil.convertirHoraSiPM(hora);
+				if (isValid(horaTx) && !horaes[0].equals("12") && !servicio.equals("Consulta Tx Internacionales Validar Estado"))
+					horaconver = DXCUtil.convertirHoraSiPM(horaTx);
 
 				else
 					
-					horaconver = hora;
+					horaconver = horaTx;
 
 				listahora = this.findElements(By.xpath(xpathBuscarFechayHora.replace("fechayhoraconvert", horaconver)));
 
@@ -309,11 +306,11 @@ public class PageDivisas extends PagePortalPymes {
 				// Si encuentra ambos, intenta obtener el documento
 				if (listaFecha != null && listahora != null) {
 					
-					documentoTx = findDocumentWithTime(hora);
+					documentoTx = findDocumentWithTime(servicio,horaTx,moneda);
 					
 					if (!isValid(documentoTx)) {
 						
-					documentoTx = findDocumentWithTimeAfterDelay(fecha, hora, page);
+					documentoTx = findDocumentWithTimeAfterDelay(pendieteAprobar,servicio,fechaTx, horaTx, moneda,page);
 					}
 					if (isValid(documentoTx)) {
 						// Documento encontrado
@@ -356,9 +353,9 @@ public class PageDivisas extends PagePortalPymes {
 
 	// ============================================[findDocumentWithTimeAfterDelay]===========================================================================
 
-	public String findDocumentWithTimeAfterDelay(String fecha, String horaconvert, String page) throws Exception {
+	public String findDocumentWithTimeAfterDelay(String pendieteAprobar,String servicio,String fechaTx, String horaconvert,String moneda,String page) throws Exception {
 		// Convierte minutos a milisegundos
-		return findDocumentWithTime(fecha, horaconvert, page);
+		return findDocumentWithTime(pendieteAprobar,servicio,fechaTx, horaconvert,moneda, page);
 	}
 
 	// ============================================[findDocumentWithTime]===========================================================================
@@ -373,20 +370,16 @@ public class PageDivisas extends PagePortalPymes {
 	 * @return Número de transacción o documento, o null si ocurre un error
 	 * @throws Exception en caso de error en el procesamiento
 	 */
-	public String findDocumentWithTime(String fecha, String horaconvert, String page) throws Exception {
-
-		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
-		String servicio = SettingsRun.getTestData().getParameter("Servicio");
-		String pendieteAprobar = SettingsRun.getTestData().getParameter("Tipo prueba");
+	public String findDocumentWithTime(String tipoPrueba,String servicio,String fechaTx, String horaconvert, String moneda,String page) throws Exception {
 
 		WebElement obTNumDocumTxCon = null;
 		try {
 
 			String fechayHoraconver = null;
 
-			if (servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado") && !pendieteAprobar.contains("Pend")) {
+			if (servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado") && !tipoPrueba.contains("Pend")) {
 
-				fechayHoraconver = fecha + " " + horaconvert;
+				fechayHoraconver = fechaTx + " " + horaconvert;
 
 				obTNumDocumTxCon = this.element(xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
 				Reporter.write(fechayHoraconver);
@@ -396,7 +389,7 @@ public class PageDivisas extends PagePortalPymes {
 				}
 
 				if (isValid(horaconvert) && !horaconvert.equals("12") && !servicio.equals("Consulta Tx Internacionales Validar Estado"))
-					fechayHoraconver = fecha + " " + DXCUtil.convertirHoraSiPM(horaconvert);
+					fechayHoraconver = fechaTx + " " + DXCUtil.convertirHoraSiPM(horaconvert);
 
 				obTNumDocumTxCon = this.element(
 						xpathNumDocumTxCon2.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda));
@@ -408,7 +401,7 @@ public class PageDivisas extends PagePortalPymes {
 
 			}
 
-			if (!servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado")&& pendieteAprobar.contains("Pend") && page.equals("Aprobaciones")) {
+			if (!servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado")&& tipoPrueba.contains("Pend") && page.equals("Aprobaciones")) {
 
 				obTNumDocumTxCon = this.element(xpathNumDocumTxCon3.replace("fechayhoraconvert", horaconvert).replace("MONEDA", moneda));
 				Reporter.write(horaconvert);
@@ -420,7 +413,7 @@ public class PageDivisas extends PagePortalPymes {
 			} else {
 
 				fechayHoraconver = horaconvert;
-				if (isValid(horaconvert)&&!servicio.equals("Consulta Tx Internacionales Validar Estado"))
+				if (isValid(horaconvert)&& !horaconvert.equals("12")&&!servicio.equals("Consulta Tx Internacionales Validar Estado"))
 				fechayHoraconver = DXCUtil.convertirHoraSiPM(fechayHoraconver);
 				Reporter.write(fechayHoraconver);
 
@@ -438,11 +431,11 @@ public class PageDivisas extends PagePortalPymes {
 
 				if (isValid(horaconvert) && !horaSepara[0].equals("12"))
 
-					fechayHoraconver = fecha + " " + DXCUtil.convertirHoraSiPM(fechayHoraSepara[1]);
+					fechayHoraconver = fechaTx + " " + DXCUtil.convertirHoraSiPM(fechayHoraSepara[1]);
 
 				else
 
-					fechayHoraconver = fecha + " " + horaConver;
+					fechayHoraconver = fechaTx + " " + horaConver;
 
 				Reporter.write(fechayHoraconver);
 
@@ -471,11 +464,8 @@ public class PageDivisas extends PagePortalPymes {
 	 * @return Retorna el [Número de tx o Documento de la Tx] o null
 	 * @throws Exception
 	 */
-	public String findDocumentWithTime(String horaconvert) throws Exception {
+	public String findDocumentWithTime(String servicio,String horaconvert,String moneda) throws Exception {
 
-		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
-		String servicio = SettingsRun.getTestData().getParameter("Servicio");
-		
 		String documentoTx = "";
 		String fechayHoraconver = "";
 

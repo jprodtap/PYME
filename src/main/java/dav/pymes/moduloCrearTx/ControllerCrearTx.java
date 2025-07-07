@@ -115,6 +115,10 @@ public class ControllerCrearTx {
 			tipoCodigo = null, numeroCodigo = null, intermediario = null, tipoCodigoInter = null,
 			numeroCodigoInter = null;
 
+	// Consuta Comprobantes
+
+	static String tipoConstaTxRealizadas = null, fecha = null, hora = null, moneda = null;
+
 // -----------------------------------------------------------------------------------------------------------------------	
 
 	private String[] arrMsgBuscarEstado = { PageConfirmacion.MSG_EXITO_APROB, PageConfirmacion.MSG_EXITO_PAGO,
@@ -247,7 +251,14 @@ public class ControllerCrearTx {
 			this.intermediario = SettingsRun.getTestData().getParameter("Requiere un banco intermediario");
 			this.tipoCodigoInter = SettingsRun.getTestData().getParameter("Tipo de código Intermediario");
 			this.numeroCodigoInter = SettingsRun.getTestData().getParameter("Número de código Intermediario");
+
 		}
+
+		// Consulta Comprobantes
+		this.tipoConstaTxRealizadas = SettingsRun.getTestData().getParameter("Tiempo de Consulta");
+		this.fecha = SettingsRun.getTestData().getParameter("Fecha tx");
+		this.hora = SettingsRun.getTestData().getParameter("Hora tx");
+		this.moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
 
 		if (!DatosDavivienda.IS_RISKMOTOR) {
 			nombreAmbiente = SettingsRun.getGlobalData("AMBIENTE_PYME");
@@ -929,9 +940,10 @@ public class ControllerCrearTx {
 		if (msgError == null) {
 			msgError = "Error_1";
 		}
+
 		Reporter.write(msgError);
 
-		Evidence.save(msgError.replace(" ", ""));
+		Evidence.save(msgError.replace(" ", "").replaceAll("[\\\\/:*?\"<>|¡!\\.]", "").replaceAll("\\s+", "_"));
 
 		if (DatosDavivienda.IS_RISKMOTOR) {
 			Reporter.reportEvent(Reporter.MIC_FAIL, "No se adiciona a MR >>> " + msgError);
@@ -1435,6 +1447,17 @@ public class ControllerCrearTx {
 
 				msgError = pageOrigen.irAOpcionMoZilla("Transacciones Pendientes de Firmas",
 						"Pagos, Transferencias y Otros", "Pendientes de Aprobación", null, null);
+			}
+
+		} else if (pagoyTx.contains("Pagos, Transferencias e Inscripciones")) {
+			if (navegador.contains("CHROME")) {
+
+				msgError = pageOrigen.irAOpcion("Transacciones Pendientes de Firmas",
+						"Pagos, Transferencias e Inscripciones", "Pendientes de Aprobación");
+			} else {
+
+				msgError = pageOrigen.irAOpcionMoZilla("Transacciones Pendientes de Firmas",
+						"Pagos, Transferencias e Inscripciones", "Pendientes de Aprobación", null, null);
 			}
 
 		} else {
@@ -2134,7 +2157,7 @@ public class ControllerCrearTx {
 
 			if (!this.tipoPrueba.equals(TP_LOGIN))
 				this.transaccion = this.getTransaccion(this.tipoPrueba, this.servicio);
-			
+
 			DatosDavivienda.RISKMOTOR.setTransaccion(this.transaccion);
 
 			String userType = "Token"; // VALOR POR DEFECTO
@@ -2220,7 +2243,10 @@ public class ControllerCrearTx {
 
 						DatosDavivienda.RISKMOTOR.setCuentaDestino("Monedero otro Banco");
 
-						if (datoCtaSinEspacios[1].contains("electronicos")|| datoCtaSinEspacios[1].contains("electrónicos")|| datoCtaSinEspacios[1].contains("ELECTRONICOS")|| datoCtaSinEspacios[1].contains("ELECTRÓNICOS")) {
+						if (datoCtaSinEspacios[1].contains("electronicos")
+								|| datoCtaSinEspacios[1].contains("electrónicos")
+								|| datoCtaSinEspacios[1].contains("ELECTRONICOS")
+								|| datoCtaSinEspacios[1].contains("ELECTRÓNICOS")) {
 							DatosDavivienda.RISKMOTOR.setTransaccion("Pago a monederos");
 						}
 
@@ -2392,11 +2418,14 @@ public class ControllerCrearTx {
 							|| datoCtaSinEspacios[1].contains("ELECTRONICOS")
 							|| datoCtaSinEspacios[1].contains("ELECTRÓNICOS")) {
 						DatosDavivienda.RISKMOTOR.setCuentaDestino("Monedero otro Banco");
-						
-						if (datoCtaSinEspacios[1].contains("electronicos")|| datoCtaSinEspacios[1].contains("electrónicos")|| datoCtaSinEspacios[1].contains("ELECTRONICOS")|| datoCtaSinEspacios[1].contains("ELECTRÓNICOS")) {
+
+						if (datoCtaSinEspacios[1].contains("electronicos")
+								|| datoCtaSinEspacios[1].contains("electrónicos")
+								|| datoCtaSinEspacios[1].contains("ELECTRONICOS")
+								|| datoCtaSinEspacios[1].contains("ELECTRÓNICOS")) {
 							DatosDavivienda.RISKMOTOR.setTransaccion("Pago a monederos");
 						}
-						
+
 					} else if (datoCtaSinEspacios[1].contains("cuenta de ahorros")
 							|| datoCtaSinEspacios[1].contains("CUENTA DE AHORROS")) {
 
@@ -2534,7 +2563,10 @@ public class ControllerCrearTx {
 
 						DatosDavivienda.RISKMOTOR.setCuentaDestino("Monedero otro Banco");
 
-						if (datoCtaSinEspacios[1].contains("electronicos")|| datoCtaSinEspacios[1].contains("electrónicos")|| datoCtaSinEspacios[1].contains("ELECTRONICOS")|| datoCtaSinEspacios[1].contains("ELECTRÓNICOS")) {
+						if (datoCtaSinEspacios[1].contains("electronicos")
+								|| datoCtaSinEspacios[1].contains("electrónicos")
+								|| datoCtaSinEspacios[1].contains("ELECTRONICOS")
+								|| datoCtaSinEspacios[1].contains("ELECTRÓNICOS")) {
 							DatosDavivienda.RISKMOTOR.setTransaccion("Pago a monederos");
 						}
 
@@ -2701,7 +2733,10 @@ public class ControllerCrearTx {
 
 						DatosDavivienda.RISKMOTOR.setCuentaDestino("Monedero otro Banco");
 
-						if (datoCtaSinEspacios[1].contains("electronicos")|| datoCtaSinEspacios[1].contains("electrónicos")|| datoCtaSinEspacios[1].contains("ELECTRONICOS")|| datoCtaSinEspacios[1].contains("ELECTRÓNICOS")) {
+						if (datoCtaSinEspacios[1].contains("electronicos")
+								|| datoCtaSinEspacios[1].contains("electrónicos")
+								|| datoCtaSinEspacios[1].contains("ELECTRONICOS")
+								|| datoCtaSinEspacios[1].contains("ELECTRÓNICOS")) {
 							DatosDavivienda.RISKMOTOR.setTransaccion("Pago a monederos");
 						}
 
@@ -3747,7 +3782,9 @@ public class ControllerCrearTx {
 						DatosDavivienda.RISKMOTOR.setNumCuentaDestino(this.referencia2);
 						DatosDavivienda.RISKMOTOR.setCuentaDestino(this.TipoProd(this.referencia1));
 
-						if (this.referencia1.contains("DEPÓSITOS ELECTRONICOS")|| this.referencia1.contains("DEPÓSITOS ELECTRÓNICOS")|| this.referencia1.contains("Depósitos electronicos")) {
+						if (this.referencia1.contains("DEPÓSITOS ELECTRONICOS")
+								|| this.referencia1.contains("DEPÓSITOS ELECTRÓNICOS")
+								|| this.referencia1.contains("Depósitos electronicos")) {
 							DatosDavivienda.RISKMOTOR.setCuentaDestino("Monedero otro Banco");
 							DatosDavivienda.RISKMOTOR.setTransaccion("Transferencias a monederos");
 						}
@@ -3872,7 +3909,12 @@ public class ControllerCrearTx {
 
 							DatosDavivienda.RISKMOTOR.setCuentaDestino(this.TipoProd(this.referencia1));
 
-						} else if (this.bancoDesMotor != null || !this.bancoDesMotor.isEmpty()|| !this.bancoDesMotor.equals(" ")&& (!this.bancoDesMotor.contains("Davivienda")|| !this.bancoDesMotor.contains("DAVIVIENDA"))&& (!this.bancoDesMotor.contains("Daviplata")|| !this.bancoDesMotor.contains("DAVIPLATA"))) {
+						} else if (this.bancoDesMotor != null || !this.bancoDesMotor.isEmpty()
+								|| !this.bancoDesMotor.equals(" ")
+										&& (!this.bancoDesMotor.contains("Davivienda")
+												|| !this.bancoDesMotor.contains("DAVIVIENDA"))
+										&& (!this.bancoDesMotor.contains("Daviplata")
+												|| !this.bancoDesMotor.contains("DAVIPLATA"))) {
 //							DatosDavivienda.RISKMOTOR.setTransaccion("Transferencias a monederos");
 							DatosDavivienda.RISKMOTOR.setCuentaDestino("Monedero otro Banco");
 						}
@@ -3917,14 +3959,17 @@ public class ControllerCrearTx {
 
 					}
 
-					if (this.servicio.contains("Cuenta No Inscrita") || this.servicio.contains("Mismo NIT")|| this.servicio.contains("Cuenta Inscrita")) {
+					if (this.servicio.contains("Cuenta No Inscrita") || this.servicio.contains("Mismo NIT")
+							|| this.servicio.contains("Cuenta Inscrita")) {
 
 						DatosDavivienda.RISKMOTOR.setNumCuentaDestino(this.referencia2);
 						DatosDavivienda.RISKMOTOR.setCuentaDestino(this.TipoProd(this.referencia1));
 
-						if (this.referencia1.contains("DEPÓSITOS ELECTRONICOS")|| this.referencia1.contains("DEPÓSITOS ELECTRÓNICOS")|| this.referencia1.contains("Depósitos electronicos")) {
+						if (this.referencia1.contains("DEPÓSITOS ELECTRONICOS")
+								|| this.referencia1.contains("DEPÓSITOS ELECTRÓNICOS")
+								|| this.referencia1.contains("Depósitos electronicos")) {
 							DatosDavivienda.RISKMOTOR.setCuentaDestino("Monedero otro Banco");
-						DatosDavivienda.RISKMOTOR.setTransaccion("Transferencias a monederos");
+							DatosDavivienda.RISKMOTOR.setTransaccion("Transferencias a monederos");
 						}
 					}
 
@@ -4088,8 +4133,10 @@ public class ControllerCrearTx {
 						DatosDavivienda.RISKMOTOR.setNumCuentaDestino(this.referencia2);
 						DatosDavivienda.RISKMOTOR.setCuentaDestino(this.TipoProd(this.referencia1));
 
-						if (this.referencia1.contains("DEPÓSITOS ELECTRONICOS")|| this.referencia1.contains("DEPÓSITOS ELECTRÓNICOS")|| this.referencia1.contains("Depósitos electronicos")) {
-							
+						if (this.referencia1.contains("DEPÓSITOS ELECTRONICOS")
+								|| this.referencia1.contains("DEPÓSITOS ELECTRÓNICOS")
+								|| this.referencia1.contains("Depósitos electronicos")) {
+
 							DatosDavivienda.RISKMOTOR.setCuentaDestino("Monedero otro Banco");
 							DatosDavivienda.RISKMOTOR.setTransaccion("Transferencias a monederos");
 						}
@@ -4261,8 +4308,10 @@ public class ControllerCrearTx {
 						DatosDavivienda.RISKMOTOR.setNumCuentaDestino(this.referencia2);
 						DatosDavivienda.RISKMOTOR.setCuentaDestino(this.TipoProd(this.referencia1));
 
-						if (this.referencia1.contains("DEPÓSITOS ELECTRONICOS")|| this.referencia1.contains("DEPÓSITOS ELECTRÓNICOS")|| this.referencia1.contains("Depósitos electronicos")) {
-							
+						if (this.referencia1.contains("DEPÓSITOS ELECTRONICOS")
+								|| this.referencia1.contains("DEPÓSITOS ELECTRÓNICOS")
+								|| this.referencia1.contains("Depósitos electronicos")) {
+
 							DatosDavivienda.RISKMOTOR.setCuentaDestino("Monedero otro Banco");
 							DatosDavivienda.RISKMOTOR.setTransaccion("Transferencias a monederos");
 						}
@@ -4404,11 +4453,11 @@ public class ControllerCrearTx {
 
 			msg = pageRecibirTransferenciasInternacionales.seleccionarTransferencia("Recibir");// Se en carga de
 																								// selecionar el modulo
-																								// de Divisas
+																								// de Divisas [Recibir]
 
 			if (msg != null && !msg.equals(""))
 				this.terminarIteracionXError(msg);
-
+			// SELECIONAR CUENTA ORIGEN
 			String msgError = pageRecibirTransferenciasInternacionales.TxInternacionalesOrigen(
 					this.numerodereferenciaExterna, this.modena, this.concepTx, numCambiario1, numCambiario2,
 					this.valorNumeral1, this.valorNumeral2);
@@ -4418,8 +4467,9 @@ public class ControllerCrearTx {
 				this.terminarIteracionXError(msgError);
 			}
 
-			// Cuenta destino
-			msgError = pageRecibirTransferenciasInternacionales.seleccionarCuenta(this.referencia1, this.referencia2);
+			// SELECIONAR CUENTA DESTINO CUENTA
+			msgError = pageRecibirTransferenciasInternacionales.seleccionarCuenta(this.tipoIdEm, this.nitEmpre,
+					this.referencia1, this.referencia2);
 			if (msgError != null) {
 				this.terminarIteracionXError(msgError);
 			}
@@ -4438,8 +4488,8 @@ public class ControllerCrearTx {
 
 			if (!DatosDavivienda.IS_RISKMOTOR) {
 				if (DatosDavivienda.STRATUS != null) {
-					this.pageRecibirTransferenciasInternacionales.validacionSaldosStratus(this.referencia1,
-							this.referencia2, false);
+					this.pageRecibirTransferenciasInternacionales.validacionSaldosStratus(this.tipoIdEm, this.nitEmpre,
+							this.referencia1, this.referencia2, false);
 					String saldoIni = this.pageRecibirTransferenciasInternacionales.getSaldoTotalInicialOrigen();
 					String saldodis = this.pageRecibirTransferenciasInternacionales.getSaldoDispoInicialOrigen();
 					String saldoFin = this.pageRecibirTransferenciasInternacionales.getSaldoTotalFinalOrigen();
@@ -4498,9 +4548,9 @@ public class ControllerCrearTx {
 			 * mensaje Importante Para enviar o recibir transferencias cierra el mensaje
 			 */
 
-//			msg = pageRecibirTransferenciasInternacionales.closeActiveIntAlert();
-//			if (msg != null && !msg.equals("") && !msg.contains("Para enviar o recibir transferencias"))
-//				this.terminarIteracionXError(msg);
+			msg = pageEnviarTransInternacional.closeActiveIntAlert();
+			if (msg != null && !msg.equals("") && !msg.contains("Para enviar o recibir transferencias"))
+				this.terminarIteracionXError(msg);
 
 			// Seleciona la cuenta origen Inicial de la tx si es cuenta Ahorros o Corriente.
 			msg = pageEnviarTransInternacional.seleccionarCuenta(this.servicio, this.tipoIdEm, this.nitEmpre,
@@ -4772,12 +4822,26 @@ public class ControllerCrearTx {
 		if (msgRta != null && !msgRta.contains("recibida") && this.tipoPrueba.equals("Tx En Línea")) {
 			String msg = null;
 			if (!msgRta.contains(PageConfirmacion.MSG_EXITO_DOC_Y_FOR_COMPLETE_INF_INTER)) {
-				msg = this.pageDocumentos_Y_Formularios.ModuloDocumetosYFormularios(this.tipoPrueba);
+
+				if (this.fecha == null || this.fecha.trim().isEmpty()
+						|| this.hora == null && this.hora.trim().isEmpty()) {
+					this.fecha = SettingsRun.getTestData().getParameter("Fecha tx");
+					this.hora = SettingsRun.getTestData().getParameter("Hora tx");
+				}
+
+				msg = this.pageDocumentos_Y_Formularios.ModuloDocumetosYFormularios(this.tipoPrueba, this.servicio,
+						this.fecha, this.hora, this.moneda);
 				if (msg != null && !msg.contains("En este módulo puede visualizar las operaciones") && !msg
 						.contains("Los campos que no se presentan en la declaración de cambio serán autocompletados"))
 					this.terminarIteracionXErrorMotor(msg);
 			} else {
-				msg = this.pageDocumentos_Y_Formularios.IralModuloDocumetosYFormularios();
+				if (this.fecha == null || this.fecha.trim().isEmpty()
+						|| this.hora == null && this.hora.trim().isEmpty()) {
+					this.fecha = SettingsRun.getTestData().getParameter("Fecha tx");
+					this.hora = SettingsRun.getTestData().getParameter("Hora tx");
+				}
+				msg = this.pageDocumentos_Y_Formularios.IralModuloDocumetosYFormularios(this.tipoPrueba, this.servicio,
+						this.fecha, this.hora, this.moneda);
 				if (msg != null && !msg.isEmpty())
 					this.terminarIteracionXErrorMotor(msg);
 			}
@@ -4788,6 +4852,118 @@ public class ControllerCrearTx {
 			String desInversion = SettingsRun.getTestData().getParameter("Destino de la inversión");
 			String opciondeinversión = SettingsRun.getTestData().getParameter("Opción de inversión");
 			String deducciones = SettingsRun.getTestData().getParameter("Deducciones");
+
+			// Datos Documentos y formularios A cambiar
+			String cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
+			String conceptoAcambiar = SettingsRun.getTestData().getParameter("Concepto de la transferencia A Cambiar");
+			String numeroDeposito = SettingsRun.getTestData().getParameter("Número de depósito 1");
+			String numeroFacturaoReferDeclaracion = SettingsRun.getTestData().getParameter("Número de declaración 1");
+			String cambiarlistnumeralOperacion_Numeral1 = SettingsRun.getTestData()
+					.getParameter("Cambiar Numeral cambiario 1");
+			String numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
+			String cambiarDatosDescripciondelaoperacion = SettingsRun.getTestData()
+					.getParameter("Cambiar Datos Descripción de la operación");
+			String numerodelprestamooaval = SettingsRun.getTestData().getParameter("Número del préstamo o aval");
+			String nombredelacreedoroeldeudoroavalista = SettingsRun.getTestData()
+					.getParameter("Nombre del acreedor o el deudor o avalista");
+			String nombredeldeudoroacreedorAvaladoobeneficiarioresidente = SettingsRun.getTestData()
+					.getParameter("Nombre del deudor o acreedor / Avalado o beneficiario residente");
+			String tipodeidentificacióndeldeudor = SettingsRun.getTestData()
+					.getParameter("Tipo de identificación del deudor");
+			String numerodeidentificaciondeldeudor = SettingsRun.getTestData()
+					.getParameter("Número de identificación del deudor");
+			String digitodeverificacion = SettingsRun.getTestData().getParameter("Dígito de verificación");
+			String monedaestipulada = SettingsRun.getTestData().getParameter("Moneda estipulada");
+			String valormonedaestipulada = SettingsRun.getTestData().getParameter("Valor moneda estipulada");
+			String tasadecambiomoneda = SettingsRun.getTestData().getParameter("Tasa de cambio moneda");
+			String cambiarValornumeralcambiario1 = SettingsRun.getTestData()
+					.getParameter("Cambiar Valor numeral cambiario 1");
+			String ValorNumeral1Camb = SettingsRun.getTestData().getParameter("Valor numeral cambiario A Cambiar 1");
+			String validacionAdicionar = SettingsRun.getTestData().getParameter("Validar Numerales");
+
+			// Datos Formularios del EmpresaReceptora a agregar o Actualizar
+
+			String tipodeidentificacionReceptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Tipo de identificación");
+			String numerodeidentificacionReceptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Número de identificación");
+			String digitodeverificacionReceptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Dígito de verificación");
+			String nombreorazonsocialReceptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Nombre o razón social");
+			String codigopaisReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código país");
+			String codigodepartamentoReptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Código departamento");
+			String codigociudadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código ciudad");
+			String codigoCIIUReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código CIIU");
+			String telefonoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Teléfono");
+			String direccionReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Dirección");
+			String correoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Correo electrónico");
+			String sectorReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Sector");
+			String tipodeempresaReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de empresa");
+			String superintendenciaReptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Superintendencia de vigilancia");
+			String actividadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Actividad");
+			String tipoderegimenReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de régimen");
+			String naturalezaReptora = SettingsRun.getTestData().getParameter("Empresa receptora  - Naturaleza");
+
+			this.pageDocumentos_Y_Formularios.EmpresaReceptora(tipodeidentificacionReceptora,
+					numerodeidentificacionReceptora, digitodeverificacionReceptora, nombreorazonsocialReceptora,
+					codigopaisReceptora, codigodepartamentoReptora, codigociudadReptora, codigoCIIUReptora,
+					telefonoReptora, direccionReptora, correoReptora, sectorReptora, tipodeempresaReptora,
+					superintendenciaReptora, actividadReptora, tipoderegimenReptora, naturalezaReptora);
+
+			String identificacionInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Tipo de identificación");
+			String numerodeidentificacionInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Número de identificación");
+			String digitodeverificacionInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Dígito de verificación");
+			String nombreorazonsocialInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Nombre o razón social");
+
+			String codigoPaisInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Código país");
+			String codigoDepartamentoInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Código departamento");
+			String codigociudadInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Código ciudad");
+			String codigoCIIUInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Código CIIU");
+
+			String correoElectronicoInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Correo electrónico");
+			String sectorInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Sector");
+			String tipodeempresaInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Tipo de empresa");
+			String superintendenciaInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Superintendencia de vigilancia");
+			String naturalezaInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Naturaleza");
+
+			String telefonoInversionista = "";
+			String direccionInversionista = "";
+
+			if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Teléfono"))
+
+				telefonoInversionista = SettingsRun.getTestData()
+						.getParameter("Identificación del inversionista - Teléfono");
+
+			if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Dirección"))
+				direccionInversionista = SettingsRun.getTestData()
+						.getParameter("Identificación del inversionista - Dirección");
+
+			this.pageDocumentos_Y_Formularios.Inversionista(identificacionInversionista,
+					numerodeidentificacionInversionista, digitodeverificacionInversionista,
+					nombreorazonsocialInversionista, codigoPaisInversionista, codigoDepartamentoInversionista,
+					codigociudadInversionista, codigoCIIUInversionista, correoElectronicoInversionista,
+					sectorInversionista, tipodeempresaInversionista, superintendenciaInversionista,
+					naturalezaInversionista, telefonoInversionista, direccionInversionista);
+
+			// Validacion Dian
+			String validacionDian = SettingsRun.getTestData().getParameter("Validacion - DIAN");
+
 			String cargueDocu = SettingsRun.getTestData().getParameter("Cargue Archivo Documentos");
 
 			// Divide la ruta en un array de strings separados por comas
@@ -4795,7 +4971,13 @@ public class ControllerCrearTx {
 
 			msg = this.pageDocumentos_Y_Formularios.DatosDocumetosYFormularios(this.concepTx, tipoOperacion,
 					desInversion, opciondeinversión, this.valorsin, numCambiario1, this.valorNumeral1, numCambiario2,
-					this.valorNumeral2, deducciones, rutaArch);
+					this.valorNumeral2, deducciones, cambiarConcepto, conceptoAcambiar, numeroDeposito,
+					numeroFacturaoReferDeclaracion, cambiarlistnumeralOperacion_Numeral1, numeral1Acambiar,
+					cambiarDatosDescripciondelaoperacion, numerodelprestamooaval, nombredelacreedoroeldeudoroavalista,
+					nombredeldeudoroacreedorAvaladoobeneficiarioresidente, tipodeidentificacióndeldeudor,
+					numerodeidentificaciondeldeudor, digitodeverificacion, monedaestipulada, valormonedaestipulada,
+					tasadecambiomoneda, cambiarValornumeralcambiario1, ValorNumeral1Camb, validacionAdicionar,
+					validacionDian, rutaArch);
 
 			if (msg != null && !msg.isEmpty()) {
 				if (msg.contains("Para continuar debe completar la información solicitada")) {
@@ -4833,7 +5015,12 @@ public class ControllerCrearTx {
 	 */
 	public String aprobarTxPendienteIntern(boolean desdeDetalle) throws Exception {
 
-		this.pageAprobInter.inicioAprobaciones(desdeDetalle);
+		if (this.fecha == null || this.fecha.trim().isEmpty() || this.hora == null && this.hora.trim().isEmpty()) {
+			this.fecha = SettingsRun.getTestData().getParameter("Fecha tx");
+			this.hora = SettingsRun.getTestData().getParameter("Hora tx");
+		}
+
+		this.pageAprobInter.inicioAprobaciones(this.tipoPrueba, this.servicio, this.fecha, this.hora, this.moneda);
 
 		int numRetosFalla = 0;
 		String msgRta = null;
@@ -4877,7 +5064,8 @@ public class ControllerCrearTx {
 				;
 			}
 
-			msg = this.pageDocumentos_Y_Formularios.ModuloDocumetosYFormularios(this.tipoPrueba);
+			msg = this.pageDocumentos_Y_Formularios.ModuloDocumetosYFormularios(this.tipoPrueba, this.servicio,
+					this.fecha, this.hora, this.moneda);
 
 			if (msg != null && !msg.contains("En este módulo puede visualizar las operaciones") && !msg
 					.contains("Los campos que no se presentan en la declaración de cambio serán autocompletados"))
@@ -4889,14 +5077,135 @@ public class ControllerCrearTx {
 			String desInversion = SettingsRun.getTestData().getParameter("Destino de la inversión");
 			String opciondeinversión = SettingsRun.getTestData().getParameter("Opción de inversión");
 			String deducciones = SettingsRun.getTestData().getParameter("Deducciones");
-			String cargueDocu = SettingsRun.getTestData().getParameter("Cargue Archivo Documentos");
 
+			// Datos Documentos y formularios A cambiar
+			String cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
+			String conceptoAcambiar = SettingsRun.getTestData().getParameter("Concepto de la transferencia A Cambiar");
+			String numeroDeposito = SettingsRun.getTestData().getParameter("Número de depósito 1");
+			String numeroFacturaoReferDeclaracion = SettingsRun.getTestData().getParameter("Número de declaración 1");
+			String cambiarlistnumeralOperacion_Numeral1 = SettingsRun.getTestData()
+					.getParameter("Cambiar Numeral cambiario 1");
+			String numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
+
+			String cambiarDatosDescripciondelaoperacion = SettingsRun.getTestData()
+					.getParameter("Cambiar Datos Descripción de la operación");
+			String numerodelprestamooaval = SettingsRun.getTestData().getParameter("Número del préstamo o aval");
+			String nombredelacreedoroeldeudoroavalista = SettingsRun.getTestData()
+					.getParameter("Nombre del acreedor o el deudor o avalista");
+			String nombredeldeudoroacreedorAvaladoobeneficiarioresidente = SettingsRun.getTestData()
+					.getParameter("Nombre del deudor o acreedor / Avalado o beneficiario residente");
+
+			String tipodeidentificacióndeldeudor = SettingsRun.getTestData()
+					.getParameter("Tipo de identificación del deudor");
+			String numerodeidentificaciondeldeudor = SettingsRun.getTestData()
+					.getParameter("Número de identificación del deudor");
+
+			String digitodeverificacion = SettingsRun.getTestData().getParameter("Dígito de verificación");
+
+			String monedaestipulada = SettingsRun.getTestData().getParameter("Moneda estipulada");
+			String valormonedaestipulada = SettingsRun.getTestData().getParameter("Valor moneda estipulada");
+			String tasadecambiomoneda = SettingsRun.getTestData().getParameter("Tasa de cambio moneda");
+			String cambiarValornumeralcambiario1 = SettingsRun.getTestData()
+					.getParameter("Cambiar Valor numeral cambiario 1");
+			String ValorNumeral1Camb = SettingsRun.getTestData().getParameter("Valor numeral cambiario A Cambiar 1");
+			String validacionAdicionar = SettingsRun.getTestData().getParameter("Validar Numerales");
+
+			// Datos Formularios del EmpresaReceptora a agregar o Actualizar
+
+			String tipodeidentificacionReceptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Tipo de identificación");
+			String numerodeidentificacionReceptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Número de identificación");
+			String digitodeverificacionReceptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Dígito de verificación");
+			String nombreorazonsocialReceptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Nombre o razón social");
+			String codigopaisReceptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código país");
+			String codigodepartamentoReptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Código departamento");
+			String codigociudadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código ciudad");
+			String codigoCIIUReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Código CIIU");
+			String telefonoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Teléfono");
+			String direccionReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Dirección");
+			String correoReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Correo electrónico");
+			String sectorReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Sector");
+			String tipodeempresaReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de empresa");
+			String superintendenciaReptora = SettingsRun.getTestData()
+					.getParameter("Empresa receptora - Superintendencia de vigilancia");
+			String actividadReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Actividad");
+			String tipoderegimenReptora = SettingsRun.getTestData().getParameter("Empresa receptora - Tipo de régimen");
+			String naturalezaReptora = SettingsRun.getTestData().getParameter("Empresa receptora  - Naturaleza");
+
+			this.pageDocumentos_Y_Formularios.EmpresaReceptora(tipodeidentificacionReceptora,
+					numerodeidentificacionReceptora, digitodeverificacionReceptora, nombreorazonsocialReceptora,
+					codigopaisReceptora, codigodepartamentoReptora, codigociudadReptora, codigoCIIUReptora,
+					telefonoReptora, direccionReptora, correoReptora, sectorReptora, tipodeempresaReptora,
+					superintendenciaReptora, actividadReptora, tipoderegimenReptora, naturalezaReptora);
+
+			String identificacionInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Tipo de identificación");
+			String numerodeidentificacionInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Número de identificación");
+			String digitodeverificacionInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Dígito de verificación");
+			String nombreorazonsocialInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Nombre o razón social");
+
+			String codigoPaisInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Código país");
+			String codigoDepartamentoInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Código departamento");
+			String codigociudadInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Código ciudad");
+			String codigoCIIUInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Código CIIU");
+
+			String correoElectronicoInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Correo electrónico");
+			String sectorInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Sector");
+			String tipodeempresaInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Tipo de empresa");
+			String superintendenciaInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Superintendencia de vigilancia");
+			String naturalezaInversionista = SettingsRun.getTestData()
+					.getParameter("Identificación del inversionista - Naturaleza");
+
+			String telefonoInversionista = "";
+			String direccionInversionista = "";
+
+			if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Teléfono"))
+
+				telefonoInversionista = SettingsRun.getTestData()
+						.getParameter("Identificación del inversionista - Teléfono");
+
+			if (SettingsRun.getTestData().parameterExist("Identificación del inversionista - Dirección"))
+				direccionInversionista = SettingsRun.getTestData()
+						.getParameter("Identificación del inversionista - Dirección");
+
+			this.pageDocumentos_Y_Formularios.Inversionista(identificacionInversionista,
+					numerodeidentificacionInversionista, digitodeverificacionInversionista,
+					nombreorazonsocialInversionista, codigoPaisInversionista, codigoDepartamentoInversionista,
+					codigociudadInversionista, codigoCIIUInversionista, correoElectronicoInversionista,
+					sectorInversionista, tipodeempresaInversionista, superintendenciaInversionista,
+					naturalezaInversionista, telefonoInversionista, direccionInversionista);
+
+			// Validacion Dian
+			String validacionDian = SettingsRun.getTestData().getParameter("Validacion - DIAN");
+
+			String cargueDocu = SettingsRun.getTestData().getParameter("Cargue Archivo Documentos");
 			// Divide la ruta en un array de strings separados por comas
 			String[] rutaArch = cargueDocu.split(",");
 
 			msg = this.pageDocumentos_Y_Formularios.DatosDocumetosYFormularios(this.concepTx, tipoOperacion,
 					desInversion, opciondeinversión, this.valorsin, numCambiario1, this.valorNumeral1, numCambiario2,
-					this.valorNumeral2, deducciones, rutaArch);
+					this.valorNumeral2, deducciones, cambiarConcepto, conceptoAcambiar, numeroDeposito,
+					numeroFacturaoReferDeclaracion, cambiarlistnumeralOperacion_Numeral1, numeral1Acambiar,
+					cambiarDatosDescripciondelaoperacion, numerodelprestamooaval, nombredelacreedoroeldeudoroavalista,
+					nombredeldeudoroacreedorAvaladoobeneficiarioresidente, tipodeidentificacióndeldeudor,
+					numerodeidentificaciondeldeudor, digitodeverificacion, monedaestipulada, valormonedaestipulada,
+					tasadecambiomoneda, cambiarValornumeralcambiario1, ValorNumeral1Camb, validacionAdicionar,
+					validacionDian, rutaArch);
 
 			if (msg != null) {
 

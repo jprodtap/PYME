@@ -93,6 +93,8 @@ public class PageEnviarTransInternacional extends PageDivisas {
 	By camnumeralCambiario1 = By.xpath("//*[@id='FormPaso5']/div[1]/div[2]/div[2]/div[2]");
 	By camdescripcion = By.xpath("//*[@id='FormPaso5']/div[1]/div[2]/div[3]/div[2]");
 	By camcuenta = By.xpath("//*[@id='FormPaso5']/div[1]/div[2]/div[4]/div[2]");
+	By cmpMonto = By.xpath("//*[@id='FormPaso4']/div[7]/div[2]/label");
+	By cmpMonto2 = By.xpath("//*[@id='FormPaso5']/div[2]/div[2]/div[2]/div[2]");
 	By camtipoCambio = By.xpath("//*[@id='FormPaso5']/div[2]/div[2]/div[3]/div[2]");
 	By cammontoUSD = By.xpath("//*[@id='FormPaso5']/div[2]/div[2]/div[4]/div[2]");
 	By camtasaCambio = By.xpath("//*[@id='FormPaso5']/div[2]/div[2]/div[5]/div[2]");
@@ -1334,47 +1336,123 @@ public class PageEnviarTransInternacional extends PageDivisas {
 	 * 
 	 * @throws Exception
 	 */
+//	public String cotizacion() throws Exception {
+//		contador = 0;
+//		do {
+//			DXCUtil.wait(1);
+//			contador++;
+//			if (contador >= 30) {
+//				Evidence.save("No se encuentra el Modulo: Cotizacion");
+//				this.getDriver().switchTo().defaultContent();
+//				return "No se encuentra el Modulo-Cotizacion";
+////				Reporter.reportEvent(Reporter.MIC_FAIL, "No se encuentra el Modulo Cotizacion");
+//			}
+//		} while (this.element(moduloCotización) == null);
+//
+//		DXCUtil.wait(4);
+//
+//		this.focus(submit);
+//		Evidence.save("InfoCotizacion");
+//		try {
+//			this.click(submit);
+//		} catch (Exception e) {
+//
+//			Evidence.save("Error en banco destino");
+//			this.getDriver().switchTo().defaultContent();
+//			return "Error en banco_destino";
+//		}
+//
+//		this.ErrorSesionExpirada();
+//		contador = 0;
+//		do {
+//			DXCUtil.wait(2);
+//			if (contador >= 30) {
+//				Evidence.save("No se presento el Popup Mensaje 5 minutos");
+//				this.getDriver().switchTo().defaultContent();
+//				return "No se presento el Popup Mensaje";
+//			}
+//		} while (!isElementInteractable(popupConfirmacion) && !isElementInteractable(submitPopup));
+//		;
+//
+//		this.focusInIframe(this.iframeIdDivisas, "//strong[contains(text(), 'Información')]");
+//
+//		String mensajePopUP = this.findElement(popupConfirmacion).getText();
+//
+//		if (mensajePopUP.contains("cuenta con 5 minutos para confirmar")) {
+//
+//			this.click(submitPopup);
+//
+//		} else {
+//
+//			return mensajePopUP;
+//		}
+//
+//		DXCUtil.wait(5);
+//
+//		String msg = this.closeActiveIntAlert();
+//
+//		if (msg != null) {
+//
+//			return msg;
+//		}
+//
+//		return null;
+//	}
+
+	
 	public String cotizacion() throws Exception {
 		contador = 0;
 		do {
 			DXCUtil.wait(1);
 			contador++;
 			if (contador >= 30) {
-				Evidence.save("No se encuentra el Modulo: Cotizacion");
+				Evidence.save("No se encuentra el Modulo: Cotizacion",this);
 				this.getDriver().switchTo().defaultContent();
 				return "No se encuentra el Modulo-Cotizacion";
-//				Reporter.reportEvent(Reporter.MIC_FAIL, "No se encuentra el Modulo Cotizacion");
 			}
 		} while (this.element(moduloCotización) == null);
 
-		DXCUtil.wait(4);
-
+		Evidence.save("InfoCotizacion",this);
+		
 		this.focus(submit);
-		Evidence.save("InfoCotizacion");
+		
 		try {
+			
 			this.click(submit);
+			
 		} catch (Exception e) {
 
-			Evidence.save("Error en banco destino");
+			Evidence.save("Error en banco destino",this);
 			this.getDriver().switchTo().defaultContent();
 			return "Error en banco_destino";
 		}
-
-		this.ErrorSesionExpirada();
+		
 		contador = 0;
 		do {
-			DXCUtil.wait(2);
+			DXCUtil.wait(1);
 			if (contador >= 30) {
-				Evidence.save("No se presento el Popup Mensaje 5 minutos");
+				this.ErrorSesionExpirada();
+				Evidence.save("No se presento el Popup Mensaje 5 minutos",this);
 				this.getDriver().switchTo().defaultContent();
 				return "No se presento el Popup Mensaje";
 			}
 		} while (!isElementInteractable(popupConfirmacion) && !isElementInteractable(submitPopup));
-		;
-
-		this.focusInIframe(this.iframeIdDivisas, "//strong[contains(text(), 'Información')]");
-
-		String mensajePopUP = this.findElement(popupConfirmacion).getText();
+		
+		
+		WebElement iframe = this.element(this.iframeIdDivisas);
+		
+//		if (iframe == null) {
+//			iframe = this.element(this.iframeIdDivisasEmpresarial);
+//		}
+		
+//		this.focusInIframe(this.iframeIdDivisas, "//strong[contains(text(), 'Información')]");
+		
+		if (iframe != null) {
+			this.focusInIframe(iframe, "//strong[contains(text(), 'Información')]");
+			
+		}
+		
+		String mensajePopUP = this.element(popupConfirmacion).getText();
 
 		if (mensajePopUP.contains("cuenta con 5 minutos para confirmar")) {
 
@@ -1396,7 +1474,6 @@ public class PageEnviarTransInternacional extends PageDivisas {
 
 		return null;
 	}
-
 //=========================================================================================================================================
 
 	/**
@@ -1439,6 +1516,7 @@ public class PageEnviarTransInternacional extends PageDivisas {
 		}
 
 		// Subtitle : Detalles de Transacción
+		String montoTx = null;
 		String tipoCambio = null;
 		String montoUSD = null;
 		String tasaCambio = null;
@@ -1446,7 +1524,13 @@ public class PageEnviarTransInternacional extends PageDivisas {
 		String costoServicio = null;
 		String iva = null;
 		String valorTotal = null;
-
+		
+		if (this.element(cmpMonto) != null) {
+			
+			montoTx = this.getText(cmpMonto).trim();
+		}else if (this.element(cmpMonto2) != null)
+			montoTx = this.getText(cmpMonto2).trim();
+			
 		if (this.element(camtipoCambio) != null)
 			tipoCambio = this.element(camtipoCambio).getText();
 
@@ -1471,37 +1555,64 @@ public class PageEnviarTransInternacional extends PageDivisas {
 		// Adicionar los parámetros indicados por [nameParameters] a la hoja de datos
 		// actual.
 		// Si intenta adicionar un parámetro existente se ignora.
-		SettingsRun.getTestData().addParametersNotExist("Tipo de cambio a USD", "Monto en USD", "Tasa de cambio",
-				"Valor de la operación en pesos colombianos", "Costo del servicio", "IVA sobre costo del servicio",
-				"Valor total a descontar de la cuenta", "Valor Neto a recibir", "Tipo de transferencia", "Fecha tx",
-				"Hora tx", "Estado", "Nombre de Usuario", "Número Aprobación");
+//		SettingsRun.getTestData().addParametersNotExist("Tipo de cambio a USD", "Monto en USD", "Tasa de cambio",
+//				"Valor de la operación en pesos colombianos", "Costo del servicio", "IVA sobre costo del servicio",
+//				"Valor total a descontar de la cuenta", "Valor Neto a recibir", "Tipo de transferencia", "Fecha tx",
+//				"Hora tx", "Estado", "Nombre de Usuario", "Número Aprobación");
 
-		if (!isValid(tipoCambio))
+		
+		if (isValid(montoTx)) {
+			SettingsRun.getTestData().addParametersNotExist("Monto Tx");
+			SettingsRun.getTestData().setParameter("Monto Tx", montoTx);
+		}
+		
+		if (isValid(tipoCambio)) {
 			// Almacena en el parámetro [nameParameter] del archivo de datos que se
 			// encuentra en la ejecución actual,el String indicado [value].
+			SettingsRun.getTestData().addParametersNotExist("Tipo de cambio a USD");
 			SettingsRun.getTestData().setParameter("Tipo de cambio a USD", tipoCambio);
-
-		if (!isValid(montoUSD))
+		}
+		
+		if (isValid(montoUSD)) {
+			SettingsRun.getTestData().addParametersNotExist("Monto en USD");
 			SettingsRun.getTestData().setParameter("Monto en USD", montoUSD);
-
-		if (!isValid(tasaCambio))
+		}
+		
+		if (isValid(tasaCambio)) {
+			SettingsRun.getTestData().addParametersNotExist("Tasa de cambio");
 			SettingsRun.getTestData().setParameter("Tasa de cambio", tasaCambio);
-
-		if (!isValid(valorOperacion))
+		}
+		
+		if (isValid(valorOperacion)) {
+			SettingsRun.getTestData().addParametersNotExist("Valor de la operación en pesos colombianos");
 			SettingsRun.getTestData().setParameter("Valor de la operación en pesos colombianos", valorOperacion);
-
-		if (!isValid(costoServicio))
+		}
+		if (isValid(costoServicio)) {
+			SettingsRun.getTestData().addParametersNotExist("Costo del servicio");
 			SettingsRun.getTestData().setParameter("Costo del servicio", costoServicio);
-
-		if (!isValid(iva))
+		}
+		if (isValid(iva)) {
+			SettingsRun.getTestData().addParametersNotExist("IVA sobre costo del servicio");
 			SettingsRun.getTestData().setParameter("IVA sobre costo del servicio", iva);
-
-		if (!isValid(valorTotal))
+		}
+		
+		if (isValid(valorTotal)) {
+			SettingsRun.getTestData().addParametersNotExist("Valor total a descontar de la cuenta");
 			SettingsRun.getTestData().setParameter("Valor total a descontar de la cuenta", valorTotal);
-
+		}
+		
+		
 		// Subtitle : Datos del Beneficiario
-
-		String nombreBeneficiario = this.element(camnombreBeneficiario).getText();
+		if (this.element(camtipoCambio) != null) {
+			
+			String nombreBeneficiario = this.element(camnombreBeneficiario).getText();
+			
+			if (isValid(nombreBeneficiario)) {
+				SettingsRun.getTestData().addParametersNotExist("Valor total a descontar de la cuenta");
+				SettingsRun.getTestData().setParameter("Valor total a descontar de la cuenta", nombreBeneficiario);
+			}
+		}
+		
 		String paisBeneficiario = this.element(campaisBeneficiario).getText();
 		String ciudadBeneficiario = this.element(camciudadBeneficiario).getText();
 		String direccionBeneficiario = this.element(camdireccionBeneficiario).getText();

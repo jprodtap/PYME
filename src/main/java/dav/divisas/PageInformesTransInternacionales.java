@@ -9,6 +9,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.Calendar;
+
+import dav.middlePymes.PageInicioMiddle;
 import dav.pymes.PageLoginPymes;
 
 
@@ -17,7 +19,7 @@ import dxc.library.reporting.Reporter;
 import dxc.library.settings.SettingsRun;
 import dxc.util.DXCUtil;
 
-public class PageInformesTransInternacionales extends PageDivisas {
+public class PageInformesTransInternacionales extends PageInicioMiddle {
 
 	public PageInformesTransInternacionales(PageLoginPymes parentPage) {
 		super(parentPage);
@@ -119,7 +121,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 	/**
 	 * Metodo inicial, ejecuta los metodos de todo el flujo de informes organizados
 	 */
-	public void InformeTransInter() throws Exception {
+	public void InformeTransInter(String servicio,String tipoId,String idUsuario,String numIdEmpresa) throws Exception {
 
 
 		fechaHora = dataArrayConsultas[0];
@@ -147,7 +149,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 		Reporter.write(" ");
 
 		linkTransferenciasInternacionales = this.getDriver().findElement(link);
-		this.TransferenciasInternacionales(fecha, NoAprobacion);
+		this.TransferenciasInternacionales(servicio,numIdEmpresa,fecha, NoAprobacion);
 
 		Reporter.write(" ");
 		Reporter.write("==========[INFORMES - ACCESOS AL SISTEMA]======================================================================================================= ");
@@ -155,7 +157,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 		
 
 		linkAccesosAlSistema = this.getDriver().findElement(linkAcceAlSistema);
-		String msg = this.AccesosAlSistema(fecha, fechaHora);
+		String msg = this.AccesosAlSistema(servicio,tipoId,idUsuario,fecha, fechaHora);
 
 		if (msg != null) {
 
@@ -163,7 +165,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 			fechaHora = newDateString;
 
 			linkAccesosAlSistema = this.getDriver().findElement(linkAcceAlSistema);
-			msg = this.AccesosAlSistema(fechaCampo, newDateString);
+			msg = this.AccesosAlSistema(servicio,tipoId,idUsuario,fechaCampo, newDateString);
 
 		}
 
@@ -172,7 +174,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 			String newDateString = this.subtractOneMinute(fechaHora);
 
 			linkAccesosAlSistema = this.getDriver().findElement(linkAcceAlSistema);
-			msg = this.AccesosAlSistema(fechaCampo, newDateString);
+			msg = this.AccesosAlSistema(servicio,tipoId,idUsuario,fechaCampo, newDateString);
 
 			if (msg != null) {
 				this.pageLogin.CerrarSesionMiddle();
@@ -258,7 +260,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 	/**
 	 * Realiza el flujo de la ventana Tranferencias Internacionales
 	 */
-	public void TransferenciasInternacionales(String today, String NoAprobacion) throws Exception {
+	public void TransferenciasInternacionales(String servicio,String numIdEmpresa ,String today, String NoAprobacion) throws Exception {
 
 		linkTransferenciasInternacionales.click();
 
@@ -344,7 +346,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 			RegistroTI = this.SearchAndSave_TransferenciasInternacionales(NoAprobacion);
 		}
 
-		this.Comparacion_TransferenciasInternacionales(RegistroTI[0], RegistroTI[1]);
+		this.Comparacion_TransferenciasInternacionales(servicio,numIdEmpresa,RegistroTI[0], RegistroTI[1]);
 
 	}
 
@@ -352,7 +354,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 	/**
 	 * Realiza el flujo de la ventana Accesos al Sistema
 	 */
-	public String AccesosAlSistema(String today, String fechaHora) throws Exception {
+	public String AccesosAlSistema(String servicio,String tipoId,String idUsuario,String today, String fechaHora) throws Exception {
 
 		linkAccesosAlSistema.click();
 
@@ -442,7 +444,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 
 		}
 
-		this.Comparacion_AccesosAlSistema(RegistroAS[0], RegistroAS[1]);
+		this.Comparacion_AccesosAlSistema(servicio,tipoId,idUsuario,RegistroAS[0], RegistroAS[1]);
 		return null;
 	}
 
@@ -588,10 +590,8 @@ public class PageInformesTransInternacionales extends PageDivisas {
 	 * Realiza la comparacion de datos de la transaccion vs datos del informe en
 	 * tranferencias internacionales
 	 */
-	public void Comparacion_TransferenciasInternacionales(String[] headerRegistro, String[] bodyRegistro) throws Exception {
+	public void Comparacion_TransferenciasInternacionales(String servicio, String numIdEmpresa ,String[] headerRegistro, String[] bodyRegistro) throws Exception {
 
-		String numIdEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
-		String tipoTx = SettingsRun.getTestData().getParameter("Servicio").trim();
 		String numeral2 = SettingsRun.getTestData().getParameter("Numeral cambiario 2").trim();
 
 		dataArrayConsultas[0] = dataArrayConsultas[0].substring(11);
@@ -610,7 +610,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 
 		} while (i < 6);
 
-		if (tipoTx.contains("Enviar")) {
+		if (servicio.contains("Enviar")) {
 			if (numeral2.equals("")) {
 				this.ValidarIgualdad(headerRegistro[7], bodyRegistro[7], dataComprobanteConsultas[13]);
 			} else {
@@ -623,7 +623,7 @@ public class PageInformesTransInternacionales extends PageDivisas {
 		this.ValidarIgualdad(headerRegistro[8], bodyRegistro[8], dataArrayConsultas[7].toUpperCase());
 		this.ValidarIgualdad(headerRegistro[9], bodyRegistro[9], numIdEmpresa);
 
-		if (tipoTx.contains("Enviar")) {
+		if (servicio.contains("Enviar")) {
 			if (bodyRegistro[10].contains(dataComprobanteConsultas[3])) {
 				Reporter.reportEvent(Reporter.MIC_PASS, "Los datos coinciden en " + headerRegistro[10]);
 				Reporter.reportEvent(Reporter.MIC_PASS, bodyRegistro[10]);
@@ -657,15 +657,9 @@ public class PageInformesTransInternacionales extends PageDivisas {
 	 * Realiza la comparacion de datos de la transaccion vs datos del informe en
 	 * accesos al sistema
 	 */
-	public void Comparacion_AccesosAlSistema(String[] headerRegistro, String[] bodyRegistro) throws Exception {
-
-		String tipoTx = SettingsRun.getTestData().getParameter("Servicio").trim();
-		String tipoId = SettingsRun.getTestData().getParameter("Tipo Identificación").trim();
-		String idUsuario = SettingsRun.getTestData().getParameter("Id usuario").trim();
-		String servicio = "Transferencias Internacionales";
+	public void Comparacion_AccesosAlSistema(String servicio, String tipoId,String idUsuario,String[] headerRegistro, String[] bodyRegistro) throws Exception {
 
 		bodyRegistro[5] = bodyRegistro[5].substring(0, bodyRegistro[5].length() - 3);
-
 		this.ValidarIgualdad(headerRegistro[0], bodyRegistro[0], dataArrayConsultas[4]);
 		this.ValidarIgualdad(headerRegistro[1], bodyRegistro[1].toUpperCase(), tipoId);
 		this.ValidarIgualdad(headerRegistro[2], bodyRegistro[2], idUsuario);
@@ -710,4 +704,38 @@ public class PageInformesTransInternacionales extends PageDivisas {
 		return newDateString;
 	}
 
+	
+	public By iframeIdDivisas = By.id("cphCuerpo_IframeDivisas");
+	By sesionEx = By.xpath("//b[contains(text(), 'Sesión no existe o ha expirado por inactividad.')]");
+	
+	/**
+	 * Espera hasta que el iframe de divisas esté disponible, lo selecciona y hace
+	 * zoom.
+	 * 
+	 * @return true si se cargó correctamente, false si hubo timeout.
+	 * @throws Exception
+	 */
+	public boolean switchToFrameDivisas() throws Exception {
+		int contador = 0;
+
+		while (contador < 30) {
+			DXCUtil.wait(1);
+			WebElement iframe = this.element(iframeIdDivisas);
+			if (iframe != null) {
+				this.getDriver().switchTo().frame(iframe);
+				this.getJse().executeScript("document.body.style.zoom ='90%';");
+				return true;
+			}
+			contador++;
+
+			if (this.element(sesionEx) != null) {
+				String msg = this.element(sesionEx).getText();
+				Reporter.reportEvent(Reporter.MIC_FAIL, msg);
+			}
+			this.getDriver().switchTo().defaultContent();
+		}
+		this.getDriver().switchTo().defaultContent();
+		Reporter.reportEvent(Reporter.MIC_FAIL, "TimeOut: No se presentó el módulo de divisas");
+		return false;
+	}
 }

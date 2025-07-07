@@ -29,7 +29,7 @@ import dxc.util.DXCUtil;
 public class PageConsultatxInternacional extends PageDivisas {
 
 //	static String numAprova = null;
-	
+
 	int noDocum;
 	int contador = 0;
 
@@ -84,22 +84,22 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 	By btnBuscarxpath = By.xpath("//*[@id='paginacion']/div[1]/div[9]/button");
 
-	
 // ***********************************************************************************************************************
-	
+
 	String seleccionLinkDocumentoXpath = "//*[@id='paginacion']/div[2]/div[3]/table/tbody/tr[noDocum]/td[2]/a[contains(text(),'documento')]";
 
 	String headerCompLocator = "//*[@class='clearfix'][I]/div[1]";
 	String dataCompLocator = "//*[@class='clearfix'][I]/div[2]";
 
 //	String xpathNumDocumTxCon = "//td[contains(text(), 'fechayhoraconvert')]/following-sibling::td[contains(text(), 'MONEDA')]/preceding-sibling::td[4]";
-	
+
 	String xpathBuscarFechayHora = "//td[contains(text(), 'fechayhoraconvert')]";
 
 	String aler = "//*[@id='AlertaModal']/div/div/div[2]/p[contains(text(), 'No existen resultados para esta búsqueda')]";
 	String sesionexp = "/html/body/div/div/div/b[contains(text(), 'Sesión no existe o ha expirado por inactividad.')]";
 
-	By cmpValorTotalTx = By.xpath("//label[contains(text(), 'Valor total descontado de la cuenta:')]/following::div[1]");
+	By cmpValorTotalTx = By
+			.xpath("//label[contains(text(), 'Valor total descontado de la cuenta:')]/following::div[1]");
 	By cmpfechaTx = By.xpath("//label[contains(text(), 'Fecha')]/following::div[1]");
 
 	PageLogin pageLoginC360 = null;
@@ -111,7 +111,6 @@ public class PageConsultatxInternacional extends PageDivisas {
 		this.pageInicioC360 = new PageInicioC360(parentPage);
 		this.pageEmpresasC360 = new PageEmpresas(parentPage);
 	}
-	
 
 // ***********************************************************************************************************************
 
@@ -138,151 +137,37 @@ public class PageConsultatxInternacional extends PageDivisas {
 	 * 
 	 * @throws Exception
 	 */
-	public void ConsultaNumtx(String servicio) throws Exception {
-		
+	public void ConsultaNumtx(String tipoPrueba, String empresa, String servicio, String usuario,
+			String tipoConstaTxRealizadas, String ordenanteBeneficiario, String tipoTranferencia, String estado,
+			String tipoMoneda, String fechaTx, String horaTx,String fechaDesde,String fechaHasta,String valor) throws Exception {
+
 		String documentoTx = numAprova;
-		
+
 		String filaArray[] = new String[8];
 
-		this.InicioConsulta(servicio);
+		this.InicioConsulta(servicio, tipoConstaTxRealizadas, ordenanteBeneficiario, tipoTranferencia, estado,
+				tipoMoneda,fechaDesde,fechaHasta);
 
 		this.ErrorSesionExpirada();
 
 		// Busca por el numero de aprobacion y guarda en un array los datos del
 		// registro, si lo encuentra
-//		if (!isValid(documentoTx)) {
-//
-//			if (SettingsRun.getTestData().parameterExist("Fecha tx") && SettingsRun.getTestData().parameterExist("Hora tx")) {
-//
-//				String fecha = SettingsRun.getTestData().getParameter("Fecha tx").trim();
-//				String hora = SettingsRun.getTestData().getParameter("Hora tx").trim();
-//
-//				// Intenta encontrar el documento con la hora original
-//				if (isValid(fecha) && isValid(hora)) {
-//
-//					// Buscar botón "Siguiente"
-//					WebElement btnSiguiente = null;
-//
-//					btnSiguiente = this.element(By.xpath("//button[contains(text(),'Siguiente')]"));
-//
-//					if (isElementInteractable(btnSiguiente)) {
-//
-//						WebElement paginaElement = this.element(By.xpath("//*[@id='pagina']"));
-//
-//						// Obtiene la opción seleccionada
-//						String paginaActualStr = null;
-//						int paginaActual = 0;
-//						int totalPaginas = 0;
-//						Select dropdown = null;
-//						String[] paginas = null;
-//
-//						// Crea un objeto Select para manipularlo
-//						if (paginaElement != null) {
-//							dropdown = new Select(paginaElement);
-//							paginaActualStr = dropdown.getFirstSelectedOption().getText().trim();
-//						}
-//
-//						if (isValid(paginaActualStr)) {
-//							paginas = paginaActualStr.split("de");
-//							paginaActual = Integer.parseInt(paginas[0].trim());
-//							totalPaginas = Integer.parseInt(paginas[1].trim());
-//						}
-//
-//						do {
-//
-//							btnSiguiente = this.element(By.xpath("//button[contains(text(),'Siguiente')]"));
-//
-//							// Buscar la fecha y hora en la página actual
-//							List<WebElement> listaFecha = null;
-//							List<WebElement> listahora = null;
-//							listaFecha = this.findElements(By.xpath(xpathBuscarFechayHora.replace("fechayhoraconvert", fecha)));
-//							listahora = this.findElements(By.xpath(xpathBuscarFechayHora.replace("fechayhoraconvert", hora)));
-//
-//							// Si encuentra ambos, intenta obtener el documento
-//							if (listaFecha != null && listahora != null) {
-//								documentoTx = findDocumentWithTimeAfterDelay(fecha, hora);
-//								if (isValid(documentoTx)) {
-//									break; // Documento encontrado
-//								}
-//							}
-//
-//							paginaElement = this.element(By.xpath("//*[@id='pagina']"));
-//							// Crea un objeto Select para manipularlo
-//							dropdown = new Select(paginaElement);
-//
-//							// Obtiene la opción seleccionada
-//							paginaActualStr = dropdown.getFirstSelectedOption().getText().trim();
-//							paginas = paginaActualStr.split("de");
-//
-//							paginaActual = Integer.parseInt(paginas[0].trim());
-//
-//							// Verificamos si ya estamos en la última página
-//							if (paginaActual >= totalPaginas) {
-//								break;
-//							}
-//
-//							// Verificar si el botón siguiente está disponible
-//							btnSiguiente = this.element(By.xpath("//button[contains(text(),'Siguiente')]"));
-//
-//							if (isElementInteractable(btnSiguiente)) {
-//								this.click(btnSiguiente);
-//								DXCUtil.wait(10); // Espera a que cargue la siguiente página
-//							} else {
-//								break;
-//							}
-//						} while (isElementInteractable(btnSiguiente));
-//					}
-//
-//					documentoTx = findDocumentWithTimeAfterDelay(fecha, hora); // Esperar un minuto
-//
-//					if (!isValid(documentoTx)) {
-//						// Si no lo encuentra, resta un minuto y vuelve a intentarlo
-//						String modifiedHora1 = DXCUtil.subtractOneMinute(hora);
-//						documentoTx = findDocumentWithTime(fecha, modifiedHora1);
-//						if (!isValid(documentoTx)) {
-//							// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-//							String modifiedHora2 = DXCUtil.subtractOneMinute(modifiedHora1);
-//							documentoTx = findDocumentWithTime(fecha, modifiedHora2);
-//							if (!isValid(documentoTx)) {
-//								// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-//								String modifiedHora3 = DXCUtil.subtractOneMinute(modifiedHora2);
-//								documentoTx = findDocumentWithTime(fecha, modifiedHora3);
-//								if (!isValid(documentoTx)) {
-//									// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-//									String modifiedHora4 = DXCUtil.subtractOneMinute(modifiedHora3);
-//									documentoTx = findDocumentWithTime(fecha, modifiedHora4);
-//									if (!isValid(documentoTx)) {
-//										// Si aún no lo encuentra, resta un minuto y vuelve a intentarlo
-//										String modifiedHora5 = DXCUtil.subtractOneMinute(modifiedHora4);
-//										documentoTx = findDocumentWithTime(fecha, modifiedHora5);
-//										if (!isValid(documentoTx)) {
-//											// Si no se encuentra incluso después de los ajustes, muestra un mensaje
-//											// deerror
-//											Reporter.reportEvent(Reporter.MIC_FAIL,"Error: Documento no encontrado con tiempos ajustados.");
-//											SettingsRun.exitTestIteration();
-//										}
-//									}
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
 
-		if (!isValid(documentoTx)) 
-		documentoTx = obtenerNumeroTxDocumentoGeneral("Consultas");
-//		documentoTx = ObtenerNumerodeTxDocumento2();
-		
+		if (!isValid(documentoTx))
+			documentoTx = obtenerNumeroTxDocumentoGeneral(tipoPrueba, servicio, "Consultas", fechaTx, horaTx,
+					tipoMoneda);
+
 		WebElement compararElementos = null;
 		contador = 0;
 		do {
 			DXCUtil.wait(1);
 			contador++;
 			if (!isValid(documentoTx)) {
-				Reporter.reportEvent(Reporter.MIC_FAIL,"El campo Número Aprobación O Documento de la Transacción no tiene Información");
+				Reporter.reportEvent(Reporter.MIC_FAIL,
+						"El campo Número Aprobación O Documento de la Transacción no tiene Información");
 			} else {
-				filaLocator = xpathdocumentoTx.replace("INUMERO", String.valueOf(contador)).replace("DocumentoTx",documentoTx);
+				filaLocator = xpathdocumentoTx.replace("INUMERO", String.valueOf(contador)).replace("DocumentoTx",
+						documentoTx);
 			}
 
 			// Valida la tabla de registros, hasta 25 registros, si no lo encuentra, cierra
@@ -290,10 +175,11 @@ public class PageConsultatxInternacional extends PageDivisas {
 			if (contador >= 25) {
 				this.getDriver().switchTo().defaultContent();
 				Evidence.saveAllScreens("-----------RESGISTRO NO ENCONTRADO-------------", this);
-				
+
 //				return "Registro no encontrado con numero de aprobacion:  " + documentoTx;
-				
-				Reporter.reportEvent(Reporter.MIC_FAIL,"Registro no encontrado con numero de aprobacion:  " + documentoTx);
+
+				Reporter.reportEvent(Reporter.MIC_FAIL,
+						"Registro no encontrado con numero de aprobacion:  " + documentoTx);
 				this.click(CerrSesion);
 				SettingsRun.exitTestIteration();
 			}
@@ -305,27 +191,27 @@ public class PageConsultatxInternacional extends PageDivisas {
 			if (compararElementos != null) {
 				noDocum = contador;
 				for (int j = 1; j < 9; j++) {
-					filaLocatorCont = xpathfilaLocatorCont.replace("I", String.valueOf(contador)).replace("J",String.valueOf(j));
+					filaLocatorCont = xpathfilaLocatorCont.replace("I", String.valueOf(contador)).replace("J",
+							String.valueOf(j));
 					filaArray[j - 1] = this.element(filaLocatorCont).getText();
 				}
-				
-				SettingsRun.getTestData().setParameter("Estado",filaArray[7] = this.element(filaLocatorCont).getText());
+
+				SettingsRun.getTestData().setParameter("Estado",
+						filaArray[7] = this.element(filaLocatorCont).getText());
 			}
 
 		} while (compararElementos == null);
-		
+
 		if (isValid(documentoTx))
 			SettingsRun.getTestData().setParameter("Número Aprobación", documentoTx);
 
-		String tipoTx = SettingsRun.getTestData().getParameter("Servicio");
-
-		if (tipoTx.equals("Consulta Tx Internacionales Validar Estado")) {
+		if (servicio.equals("Consulta Tx Internacionales Validar Estado")) {
 
 			this.Comprobante();
 
 		} else {
 
-			this.ComparacionData(filaArray);
+			this.ComparacionData(filaArray, empresa, servicio, usuario, tipoMoneda, estado, fechaTx,ordenanteBeneficiario,valor);
 			this.informes = new PageInformesTransInternacionales(this.pageLogin);
 			this.informes.dataInformes(filaArray);
 		}
@@ -336,8 +222,10 @@ public class PageConsultatxInternacional extends PageDivisas {
 	/**
 	 * Metodo inicial, valida los campos y que la tabla de registros exista
 	 */
-	public void InicioConsulta(String servicio) throws Exception {
-		
+	public void InicioConsulta(String servicio, String tipoConstaTxRealizadas, String ordenanteBeneficiario,
+			String tipoTranferencia, String estado, String tipoMoneda, String fechaDesdeStr, String fechaHastaStr)
+			throws Exception {
+
 		String msg = null;
 
 		this.switchToFrameDivisas();
@@ -359,22 +247,14 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		WebElement btnBuscar = this.element(btnBuscarxpath);
 
-
-		String tipoConstaTxRealizadas = "Día actual";
-
-		if (servicio.equals("Consulta Tx Internacionales Validar Estado")) {
-			tipoConstaTxRealizadas = SettingsRun.getTestData().getParameter("Tiempo de Consulta");
+		if (!servicio.equals("Consulta Tx Internacionales Validar Estado")) {
+			tipoConstaTxRealizadas = "Día actual";
 		}
-
-		String ordenanteBeneficiario = SettingsRun.getTestData().getParameter("Ordenante / Nombre del beneficiario en el exterior");
-		String tipoTranferencia = SettingsRun.getTestData().getParameter("Tipo de Transferencia");
-		String estado = SettingsRun.getTestData().getParameter("Estado");
-		String tipoMoneda = SettingsRun.getTestData().getParameter("Tipo Moneda");
 
 		// Si no se Obtiene el dato [Número Aprobación /o Documento de la Tx] de la
 		// Transacion en Linea lo obtiene desde el archivo excel si es para consulta de
 		// la Tx
-		
+
 		String documentoTx = numAprova;
 
 		if (!isValid(documentoTx)) {
@@ -395,7 +275,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 			} while (this.element(btnBuscarxpath) == null);
 
 			Reporter.write(" ");
-			Reporter.write("==========[PANTALLA INICIAL DE CONSULTAS]=======================================================================================================");
+			Reporter.write(
+					"==========[PANTALLA INICIAL DE CONSULTAS]=======================================================================================================");
 			Reporter.write(" ");
 
 			By arrayCampos[] = { title, subtitleConsulta, subtitleParametros, campoDocumento, campoTipoTrans,
@@ -462,7 +343,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 			} while (this.element(btnBuscarxpath) == null);
 
 			Reporter.write(" ");
-			Reporter.write("==========[PANTALLA INICIAL DE CONSULTAS]=======================================================================================================");
+			Reporter.write(
+					"==========[PANTALLA INICIAL DE CONSULTAS]=======================================================================================================");
 			Reporter.write(" ");
 
 			By arrayCampos[] = { title, subtitleConsulta, subtitleParametros, campoDocumento, campoTipoTrans,
@@ -491,7 +373,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 				Reporter.reportEvent(Reporter.MIC_PASS, "Se encuentra el boton descargar");
 			}
 
-			// Rango de fechas [48 horas (2 Días) - 7 Días - 30 Días - más criterios (30 Días) - Rango de Fechas (01/02/2025 - 28/02/2025)]
+			// Rango de fechas [48 horas (2 Días) - 7 Días - 30 Días - más criterios (30
+			// Días) - Rango de Fechas (01/02/2025 - 28/02/2025)]
 			Date fechaActual = new Date();
 
 			if (tipoConstaTxRealizadas.equals("48 horas")) {
@@ -499,35 +382,26 @@ public class PageConsultatxInternacional extends PageDivisas {
 				establecerRangoFechas(fechaDesde, fechaActual);
 
 			} else if (tipoConstaTxRealizadas.equals("7 días")) {
-				
+
 				Date fechaDesde = DXCUtil.dateAdd(fechaActual, Calendar.DAY_OF_MONTH, -7);
 				establecerRangoFechas(fechaDesde, fechaActual);
 
 			} else if (tipoConstaTxRealizadas.equals("30 días") || tipoConstaTxRealizadas.equals("más criterios")) {
-				
+
 				Date fechaDesde = DXCUtil.dateAdd(fechaActual, Calendar.DAY_OF_MONTH, -30);
 				establecerRangoFechas(fechaDesde, fechaActual);
 
 			} else if (tipoConstaTxRealizadas.equals("Rango de Fechas")) {
-				
-//				String fechaDesdeStr = SettingsRun.getTestData().getParameter("Fecha Día Inicial  Desde (dd/mm/YYYY)").trim();
-//				String fechaHastaStr = SettingsRun.getTestData().getParameter("Fecha DÍa Final Hasta (dd/mm/YYYY)").trim();
-				
-				String fechaDesdeStr = SettingsRun.getTestData().getSpecialParameter("Fecha Día Inicial  Desde (dd/mm/YYYY)", "Fecha");
-				
-				String fechaHastaStr = SettingsRun.getTestData().getSpecialParameter("Fecha DÍa Final Hasta (dd/mm/YYYY)", "Fecha");
-				
-				
+
 				Date fechaDate = null;
-				
+
 				fechaDate = DXCUtil.stringToDate(fechaDesdeStr, "YYYY-MM-DD");
-				
-				fechaDesdeStr = DXCUtil.dateToString(fechaDate, "DD/MM/YYYY"); 
-				
-				
+
+				fechaDesdeStr = DXCUtil.dateToString(fechaDate, "DD/MM/YYYY");
+
 				fechaDate = DXCUtil.stringToDate(fechaHastaStr, "YYYY-MM-DD");
-				
-				fechaHastaStr = DXCUtil.dateToString(fechaDate, "DD/MM/YYYY"); 
+
+				fechaHastaStr = DXCUtil.dateToString(fechaDate, "DD/MM/YYYY");
 
 				this.element(cmpimputTipoConsulta.replace("TIPODCON", "Histórico")).click();
 
@@ -552,7 +426,6 @@ public class PageConsultatxInternacional extends PageDivisas {
 				}
 			}
 
-
 			if (isElementInteractable(cmpimputOrdenanteBeneficiario)) {
 
 				if (isValid(ordenanteBeneficiario)) {
@@ -563,17 +436,17 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			if (isElementInteractable(cmpimputTipoTransferencia))
 				if (isValid(tipoTranferencia)) {
-					
+
 					msg = this.selectListItem(cmpimputTipoTransferencia, tipoTranferencia);
-					
+
 					if (isValid(msg))
 						Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 				}
 
 			if (isElementInteractable(cmpimputEstado))
-				
+
 				if (isValid(estado)) {
-					
+
 					msg = this.selectListItem(cmpimputEstado, estado);
 					if (isValid(msg))
 						Reporter.reportEvent(Reporter.MIC_FAIL, msg);
@@ -585,7 +458,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 					if (isValid(msg))
 						Reporter.reportEvent(Reporter.MIC_FAIL, msg);
 				}
-			
+
 			Evidence.save("Filtros ingresados");
 
 			this.click(btnBuscarxpath);
@@ -603,27 +476,15 @@ public class PageConsultatxInternacional extends PageDivisas {
 	 * Orgaiza el array dependiendo si la transaccion es enviar o recibir compara
 	 * los datos de la primera tabla de consultas
 	 */
-	public void ComparacionData(String filaArray[]) throws Exception {
+	public void ComparacionData(String filaArray[], String empresa, String servicio, String usuario, String moneda,
+			String estado, String fechaTransaccion,String ordenanteBeneficiario,String valor) throws Exception {
 
-		String ordenanteBeneficiario = null;
-		String valor = null;
-
-		String tipoTx = SettingsRun.getTestData().getParameter("Servicio").trim();
-		String fechaTransaccion = SettingsRun.getTestData().getParameter("Fecha tx").trim();
 		String documento = SettingsRun.getTestData().getParameter("Número Aprobación").trim();
-		String tipoDeTransferencia = SettingsRun.getTestData().getParameter("Servicio").trim();
-		String usuario = SettingsRun.getTestData().getParameter("Nombre de Usuario").trim();
-		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
-		String estado = SettingsRun.getTestData().getParameter("Estado").trim();
 
-		if (tipoTx.contains("Enviar") || tipoTx.contains("Divisas")) {
-			ordenanteBeneficiario = SettingsRun.getTestData().getParameter("Ordenante / Nombre del beneficiario en el exterior").trim();
-			valor = SettingsRun.getTestData().getParameter("Valor a Pagar / Transferir").trim();
-
-		} else if (tipoTx.contains("Recibir")) {
+		if (servicio.contains("Recibir")) {
 
 			ordenanteBeneficiario = SettingsRun.getTestData().getParameter("Ordenante / Nombre del beneficiario en el exterior").trim();
-			
+
 			int valor1 = Integer.parseInt(SettingsRun.getTestData().getParameter("Valor numeral cambiario 1").trim());
 
 			int valor2;
@@ -640,8 +501,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 		String[] headerFila = { "Fecha Transacción", "Documento", "Tipo de Transferencia", "Ordenante/Beneficiario",
 				"Usuario", "Moneda", "Valor", "Estado" };
 
-		String[] arrayExcel = { fechaTransaccion, documento, tipoDeTransferencia, ordenanteBeneficiario, usuario,
-				moneda, valor, estado };
+		String[] arrayExcel = { fechaTransaccion, documento, servicio, ordenanteBeneficiario, usuario, moneda, valor,
+				estado };
 
 		/*
 		 * Compara los datos obtenidos de la transaccion con la ventana consulta
@@ -678,7 +539,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 				j++;
 			}
 
-			if (arrayExcel[j].equals(filaArray[j]) || filaArray[j].equals(filaArray[j])) {
+			if (arrayExcel[j].equals(filaArray[j])) {
 
 				Reporter.reportEvent(Reporter.MIC_PASS, "Los datos coinciden en: " + headerFila[j]);
 				Reporter.reportEvent(Reporter.MIC_PASS, filaArray[j]);
@@ -703,7 +564,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		Reporter.write(" ");
 
-		this.ComparacionComprobante(tipoTx);
+		this.ComparacionComprobante(empresa, servicio);
 	}
 
 // ============================================[ComparacionComprobante]===========================================================================
@@ -712,13 +573,14 @@ public class PageConsultatxInternacional extends PageDivisas {
 	 * Almacena en un array los datos de la ventana "comprobante" dependiendo si la
 	 * transaccion es enviar o recibir
 	 */
-	public void ComparacionComprobante(String tipoTx) throws Exception {
+	public void ComparacionComprobante(String empresa, String servicio) throws Exception {
 
 		Reporter.initialize(4);
 
 		String documento = SettingsRun.getTestData().getParameter("Número Aprobación").trim();
 
-		WebElement seleccionLinkDocumento = this.element(seleccionLinkDocumentoXpath.replace("noDocum", String.valueOf(noDocum)).replace("documento", documento));
+		WebElement seleccionLinkDocumento = this.element(seleccionLinkDocumentoXpath
+				.replace("noDocum", String.valueOf(noDocum)).replace("documento", documento));
 
 		this.click(seleccionLinkDocumento);
 
@@ -776,22 +638,40 @@ public class PageConsultatxInternacional extends PageDivisas {
 		// Extrae los campos de la transaccion, para comprara, los almacena en un array
 		String cuentaDestino;
 
-		String Empresa = SettingsRun.getTestData().getParameter("Nombre Empresa").trim();
-		String TipoTransferencia = SettingsRun.getTestData().getParameter("Servicio").trim();
+//		String empresa = SettingsRun.getTestData().getParameter("Nombre Empresa").trim();
+
 		String Ordenante = SettingsRun.getTestData().getParameter("Ordenante / Nombre del beneficiario en el exterior").trim();
+
 		String Numeral = SettingsRun.getTestData().getParameter("Numeral cambiario 1").trim();
-		String referenciaExterna = SettingsRun.getTestData().getParameter("Referencia").trim();
+
+		String referenciaExterna = SettingsRun.getTestData().getParameter("Número de referencia Externa").trim();
+
 		String NoCuentasDestino = SettingsRun.getTestData().getParameter("Referencia2 / Número Producto Destino").trim();
+
 		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
+
 		String tipoCambioUSD = SettingsRun.getTestData().getParameter("Tipo de cambio a USD").trim();
+
 		String montoUSD = SettingsRun.getTestData().getParameter("Monto en USD").trim();
+
 		String tasaCambio = SettingsRun.getTestData().getParameter("Tasa de cambio").trim();
+
 		String valorCOP = SettingsRun.getTestData().getParameter("Valor de la operación en pesos colombianos").trim();
+
 		String costoServicio = SettingsRun.getTestData().getParameter("Costo del servicio").trim();
+
 		String ivaCostoServicio = SettingsRun.getTestData().getParameter("IVA sobre costo del servicio").trim();
-		String valorNetoRecibir = SettingsRun.getTestData().getParameter("Valor Neto a recibir").trim();
+		
+		String valorNetoRecibir = null;
+		
+		if (SettingsRun.getTestData().parameterExist("Valor Neto a recibir")) {
+			valorNetoRecibir = SettingsRun.getTestData().getParameter("Valor Neto a recibir").trim();
+		}
+
 		String estado = SettingsRun.getTestData().getParameter("Estado").trim();
+
 		String fechaTransaccion = SettingsRun.getTestData().getParameter("Fecha tx").trim();
+
 		String hora = SettingsRun.getTestData().getParameter("Hora tx").trim();
 
 		// Campos adicionales para tx de enviar
@@ -803,29 +683,29 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		// Organiza lo datos a comparar, dependiendo de la transaccion si es enviar o
 		// recibir
-		if (tipoTx.contains("Enviar")) {
+		if (servicio.contains("Enviar")) {
 
 			cuentaDestino = SettingsRun.getTestData().getParameter("Número de cuenta, IBAN o CLABE").trim();
-			String monto = SettingsRun.getTestData().getParameter("Valor a Pagar / Transferir").trim();
+			String monto = SettingsRun.getTestData().getParameter("Monto Tx").trim();
 
-			String[] arrayExcelComprobante = { Empresa, TipoTransferencia, cuentaOrigen, noCuenta, bancoDestino,
-					cuentaDestino, beneficiario, Numeral, moneda, monto, tipoCambioUSD, montoUSD, tasaCambio, valorCOP,
-					costoServicio, ivaCostoServicio, valorDescontado, fechaTransaccion, hora, documento };
+			String[] arrayExcelComprobante = { empresa, servicio, cuentaOrigen, noCuenta, bancoDestino, cuentaDestino,
+					beneficiario, Numeral, moneda, monto, tipoCambioUSD, montoUSD, tasaCambio, valorCOP, costoServicio,
+					ivaCostoServicio, valorDescontado, fechaTransaccion, hora, documento };
 
-			this.ComparacionDataComprobanteDePago(dataComprobante, arrayExcelComprobante, headerComprobante);
+			this.ComparacionDataComprobanteDePago(servicio, dataComprobante, arrayExcelComprobante, headerComprobante);
 
 		}
 
-		if (tipoTx.contains("Recibir")) {
+		if (servicio.contains("Recibir")) {
 
 			cuentaDestino = SettingsRun.getTestData().getParameter("Referencia1 / Tipo Producto Destino").trim();
-			String monto = SettingsRun.getTestData().getParameter("Monto").trim();
+			String monto = SettingsRun.getTestData().getParameter("Monto Tx").trim();
 
-			String[] arrayExcelComprobante = { Empresa, TipoTransferencia, Ordenante, Numeral, referenciaExterna,
-					cuentaDestino, NoCuentasDestino, moneda, monto, tipoCambioUSD, montoUSD, tasaCambio, valorCOP,
-					costoServicio, ivaCostoServicio, valorNetoRecibir, fechaTransaccion, hora, documento };
+			String[] arrayExcelComprobante = { empresa, servicio, Ordenante, Numeral, referenciaExterna, cuentaDestino,
+					NoCuentasDestino, moneda, monto, tipoCambioUSD, montoUSD, tasaCambio, valorCOP, costoServicio,
+					ivaCostoServicio, valorNetoRecibir, fechaTransaccion, hora, documento };
 
-			this.ComparacionDataComprobanteDePago(dataComprobante, arrayExcelComprobante, headerComprobante);
+			this.ComparacionDataComprobanteDePago(servicio, dataComprobante, arrayExcelComprobante, headerComprobante);
 
 		}
 
@@ -863,13 +743,13 @@ public class PageConsultatxInternacional extends PageDivisas {
 			contador++;
 			DXCUtil.wait(1);
 			getextoFecha = this.element(cmpfechaTx);
-			
+
 			if (contador > 30) {
 				Evidence.saveAllScreens("TimeOut no se presento La fecha de la tx", this);
 				Reporter.reportEvent(Reporter.MIC_FAIL, "TimeOut no se presento La fecha de la tx");
 				this.terminarIteracion();
 			}
-			
+
 		} while (getextoFecha == null);
 
 		String montoTxMov = this.getText(this.element(cmpValorTotalTx));
@@ -894,7 +774,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 				|| formatodeDescarga.equalsIgnoreCase("Archivo plano 360 posiciones")
 				|| formatodeDescarga.equalsIgnoreCase("Enviar al Correo")) {
 
-			Reporter.reportEvent(Reporter.MIC_INFO,"El formato seleccionado es '" + formatodeDescarga + "'. Solo se descarga el comprobante.");
+			Reporter.reportEvent(Reporter.MIC_INFO,
+					"El formato seleccionado es '" + formatodeDescarga + "'. Solo se descarga el comprobante.");
 
 			if (isElementInteractable(comprobante))
 				comprobante.click();
@@ -968,7 +849,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 					declaracion.click();
 
 				DXCUtil.wait(10);
-				
+
 				msg = this.closeActiveIntAlert();
 
 				if (isValid(msg)) {
@@ -985,14 +866,15 @@ public class PageConsultatxInternacional extends PageDivisas {
 	/**
 	 * Compara los datos del comprobante de pago vs los datos de la transaccion
 	 */
-	public void ComparacionDataComprobanteDePago(String[] dataComprobante, String[] arrayExcelComprobante, String[] headerComprobante) throws Exception {
+	public void ComparacionDataComprobanteDePago(String servicio, String[] dataComprobante,
+			String[] arrayExcelComprobante, String[] headerComprobante) throws Exception {
 
-		String tipoTx = SettingsRun.getTestData().getParameter("Servicio").trim();
 		String cuentaOrigen = SettingsRun.getTestData().getParameter("Tipo producto origen / Franquicia").trim();
 		String numeral2 = SettingsRun.getTestData().getParameter("Numeral cambiario 2").trim();
 
 		Reporter.write(" ");
-		Reporter.write("==========[COMPROBANTE DE PAGO - CONSULTAS]=======================================================================================================");
+		Reporter.write(
+				"==========[COMPROBANTE DE PAGO - CONSULTAS]=======================================================================================================");
 		Reporter.write(" ");
 
 		try {
@@ -1003,7 +885,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		arrayExcelComprobante[6] = arrayExcelComprobante[6].toUpperCase();
 
-		if (tipoTx.contains("Enviar")) {
+		if (servicio.contains("Enviar")) {
 
 			dataComprobante[3] = dataComprobante[3].substring(dataComprobante[3].length() - 4);
 			dataComprobante[5] = dataComprobante[5].substring(dataComprobante[5].length() - 4);
@@ -1022,7 +904,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 		SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy/MM/dd");
 		SimpleDateFormat formatoSalida = new SimpleDateFormat("dd/MM/yyyy");
 
-		if (tipoTx.contains("Enviar")) {
+		if (servicio.contains("Enviar")) {
 
 			if (!isValid(numeral2)) {
 				if (dataComprobante[17].length() > 5) {
@@ -1146,7 +1028,7 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			}
 
-			if (tipoTx.contains("Enviar")) {
+			if (servicio.contains("Enviar")) {
 
 				if (j == 3 && arrayExcelComprobante[3].contains(dataComprobante[3])) {
 					Reporter.reportEvent(Reporter.MIC_PASS, "Los datos coinciden en: " + headerComprobante[3]);
@@ -1192,7 +1074,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 						} else {
 
-							Reporter.reportEvent(Reporter.MIC_FAIL,"Los datos NO coinciden en: " + headerComprobante[4]);
+							Reporter.reportEvent(Reporter.MIC_FAIL,
+									"Los datos NO coinciden en: " + headerComprobante[4]);
 							Reporter.reportEvent(Reporter.MIC_FAIL, dataComprobante[4]);
 							Reporter.reportEvent(Reporter.MIC_FAIL, arrayExcelComprobante[4]);
 							j++;
@@ -1257,11 +1140,12 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 			}
 
-			if (!numeral2.equals("") && tipoTx.contains("Enviar") && j == 8) {
+			if (!numeral2.equals("") && servicio.contains("Enviar") && j == 8) {
 				j++;
 			}
 
-			if (dataComprobante[j].equals(arrayExcelComprobante[j])|| arrayExcelComprobante[j].equals(dataComprobante[j])) {
+			if (dataComprobante[j].equals(arrayExcelComprobante[j])
+					|| arrayExcelComprobante[j].equals(dataComprobante[j])) {
 
 				Reporter.reportEvent(Reporter.MIC_PASS, "Los datos coinciden en: " + headerComprobante[j]);
 				Reporter.reportEvent(Reporter.MIC_PASS, dataComprobante[j]);
@@ -1278,14 +1162,15 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 				} else {
 
-					if (arrayExcelComprobante[j].contains(dataComprobante[j]) || dataComprobante[j].contains(arrayExcelComprobante[j])) {
+					if (arrayExcelComprobante[j].contains(dataComprobante[j])
+							|| dataComprobante[j].contains(arrayExcelComprobante[j])) {
 
 						Reporter.reportEvent(Reporter.MIC_PASS, "Los datos coinciden en: " + headerComprobante[j]);
 						Reporter.reportEvent(Reporter.MIC_PASS, dataComprobante[j]);
 						Reporter.reportEvent(Reporter.MIC_PASS, arrayExcelComprobante[j]);
 						j++;
-					}else {
-						//Arreglar Datos Juan
+					} else {
+						// Arreglar Datos Juan
 						Reporter.reportEvent(Reporter.MIC_FAIL, "Los datos NO coinciden en: " + headerComprobante[j]);
 						Reporter.reportEvent(Reporter.MIC_FAIL, dataComprobante[j]);
 						Reporter.reportEvent(Reporter.MIC_FAIL, arrayExcelComprobante[j]);
@@ -1298,7 +1183,8 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 		}
 
-		Reporter.write(	"=================================================================================================================");
+		Reporter.write(
+				"=================================================================================================================");
 
 		this.informes = new PageInformesTransInternacionales(this.pageLogin);
 		this.informes.dataComprobanteInformes(dataComprobante);
@@ -1307,22 +1193,24 @@ public class PageConsultatxInternacional extends PageDivisas {
 
 // ============================================[ValidarCCIU]===========================================================================
 
-	public void ValidarCCIU() throws Exception {
+	public void ValidarCCIU(String numeroIDEmpresa) throws Exception {
 
-		String numeroIDEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
+//		String numeroIDEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
 		String reportMsg = null;
 
 		DXCUtil.BonotesTecla("ALTTAB");
 
 		this.pageInicioC360.irAModulo(PageInicioC360.MOD_PAGINA_INICIAL);
-		
+
 		reportMsg = this.pageEmpresasC360.buscarEmpresaC360(numeroIDEmpresa);
-		
-		if (!reportMsg.isEmpty() && (!reportMsg.contains("El cliente no ha actualizado")))
+
+		if (!reportMsg.isEmpty()
+				&& (!reportMsg.contains("El cliente no ha actualizado") && !reportMsg.contains("ACTUALIZADO")))
 			this.pageInicioC360.terminarIteracion(Reporter.MIC_NOEXEC, "[ERROR DATA] " + reportMsg);
 
-		Reporter.reportEvent(Reporter.MIC_PASS,"Se ha encontrado la empresa con el número de identificación [" + numeroIDEmpresa + "]");
-		
+		Reporter.reportEvent(Reporter.MIC_PASS,
+				"Se ha encontrado la empresa con el número de identificación [" + numeroIDEmpresa + "]");
+
 //		String masIfEmpres[] = this.pageEmpresasC360.getMasInfoClienteEmpresa();
 //		
 //		for (String masIfEmprepos :  masIfEmpres) {
@@ -1447,48 +1335,6 @@ public class PageConsultatxInternacional extends PageDivisas {
 		} while (time < 4);
 
 	}
-
-// ============================================[findDocumentWithTimeAfterDelay]===========================================================================
-
-//	private String findDocumentWithTimeAfterDelay(String fecha, String horaconvert) throws Exception {
-//		// Convierte minutos a milisegundos
-//		return findDocumentWithTime(fecha, horaconvert);
-//	}
-
-// ============================================[findDocumentWithTime]===========================================================================	
-
-//	/**
-//	 * Este metodo Obtiene el [Número de tx o Documento de la Tx]
-//	 * 
-//	 * @param fecha       Tx
-//	 * @param horaconvert Tx
-//	 * @return Retorna el [Número de tx o Documento de la Tx]
-//	 * @throws Exception
-//	 */
-//	private String findDocumentWithTime(String fecha, String horaconvert) throws Exception {
-//
-//		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
-//
-//		try {
-//
-//			String fechayHora = fecha + " " + horaconvert;
-//			String servicio = SettingsRun.getTestData().getParameter("Servicio");
-//			String fechayHoraconver = DXCUtil.convertirFecha_Y_HoraSiPM(fechayHora);
-//
-//			if (servicio.equals("Consulta Tx Internacionales Enviar al exterior Validar Estado")) {
-//				fechayHoraconver = fechayHora;
-//			}
-//
-//			String obTNumDocumTxCon = this.element(xpathNumDocumTxCon.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda)).getText();
-//
-//			return obTNumDocumTxCon;
-//
-//		} catch (Exception e) {
-//
-//			return null;
-//		}
-//
-//	}
 
 // ============================================[ValidacionesStratusConsulta]===========================================================================
 
@@ -1620,8 +1466,6 @@ public class PageConsultatxInternacional extends PageDivisas {
 				double saldoTotalFinalEsperado = 0.0;
 
 				int posicionSaldoInicialpos = -1;
-
-				String servicio = SettingsRun.getTestData().getParameter("Servicio").trim();
 
 				for (int i = 0; i < movimientosStratus.size(); i++) {
 					String[] movimiento = movimientosStratus.get(i);

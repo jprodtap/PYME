@@ -826,7 +826,7 @@ public class PageConfirmacion extends PagePortalPymes {
 			int contadorConfirmar = 0;
 
 			if (this.element(locCmTokenOtpInternacional) != null && this.isEnabled(locCmTokenOtpInternacional)) {
-				DXCUtil.wait(3);
+				DXCUtil.wait(2);
 				DXCUtil.BonotesTecla("TAB");
 				DXCUtil.BonotesTecla("ENTER");
 				Evidence.save("Confirmación Clave");

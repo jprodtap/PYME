@@ -541,7 +541,7 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 			String ordenante = this.getText(xpathOrdenante);
 			// Valida si el texto no es nulo ni vacío (o solo espacios)
 			if (isValid(ordenante)) {
-				SettingsRun.getTestData().setParameter("Ordenante", ordenante);
+				SettingsRun.getTestData().setParameter("Ordenante / Nombre del beneficiario en el exterior", ordenante);
 			} else {
 				Evidence.save("Error-ProdOrigen");
 				return "No se muestra dato del ordenante: [" + numRef + " - " + moneda + " - " + ordenante
@@ -602,7 +602,7 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 
 // =======================================================================================================================
 
-	public String seleccionarCuenta(String tipoProducto, String numeroProducto) throws Exception {
+	public String seleccionarCuenta(String tipoDocumento,String numeroDoc,String tipoProducto, String numeroProducto) throws Exception {
 
 		contador = 0;
 		WebElement elementPaso;
@@ -660,7 +660,7 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 		Evidence.save("Producto selecionado");
 
 		if (!DatosDavivienda.IS_RISKMOTOR)
-			this.validacionSaldosStratus(tipoProd, numeroProducto, true);
+			this.validacionSaldosStratus(tipoDocumento, numeroDoc,tipoProd, numeroProducto, true);
 
 		contador = 0;
 		do { // GARANTIZA QUE SE ENCUENTRA EN LA PANTALLA PARA LA SELECCI�N DEL ORIGEN
@@ -796,7 +796,10 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 
 		if (this.isDisplayed(cmpMonto)) {
 			String monto = this.getText(cmpMonto).trim();
-			SettingsRun.getTestData().setParameter("Monto", monto);
+			if (isValid(monto)) {
+				SettingsRun.getTestData().addParametersNotExist("Monto Tx");
+				SettingsRun.getTestData().setParameter("Monto Tx", monto);
+			}
 
 		} else {
 			Reporter.reportEvent(Reporter.MIC_INFO, "No se presenta el campo: Monto");
@@ -804,6 +807,10 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 
 		if (this.isDisplayed(cmpTipodecambioaUSD)) {
 			String tipodecambioaUSD = this.getText(cmpTipodecambioaUSD).trim();
+			if (isValid(tipodecambioaUSD)) {
+				SettingsRun.getTestData().addParametersNotExist("Tipo de cambio a USD");
+				SettingsRun.getTestData().setParameter("Tipo de cambio a USD", tipodecambioaUSD);
+			}
 			SettingsRun.getTestData().setParameter("Tipo de cambio a USD", tipodecambioaUSD);
 
 		} else {
@@ -812,6 +819,10 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 
 		if (this.isDisplayed(cmpMontoenUSD)) {
 			String montoenUSD = this.getText(cmpMontoenUSD).trim();
+			if (isValid(montoenUSD)) {
+				SettingsRun.getTestData().addParametersNotExist("Monto en USD");
+				SettingsRun.getTestData().setParameter("Monto en USD", montoenUSD);
+			}
 			SettingsRun.getTestData().setParameter("Monto en USD", montoenUSD);
 
 		} else {
@@ -820,13 +831,23 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 
 		if (this.isDisplayed(cmpTasadecambio)) {
 			String tasadecambio = this.getText(cmpTasadecambio).trim();
+			if (isValid(tasadecambio)) {
+				SettingsRun.getTestData().addParametersNotExist("Tasa de cambio");
+				SettingsRun.getTestData().setParameter("Tasa de cambio", tasadecambio);
+			}
 			SettingsRun.getTestData().setParameter("Tasa de cambio", tasadecambio);
 
 		} else {
 			Reporter.reportEvent(Reporter.MIC_INFO, "No se presenta el campo: Tasa de cambio");
 		}
 		if (this.isDisplayed(cmpVapesoscolombianos)) {
+			
 			String vapesoscolombianos = this.getText(cmpVapesoscolombianos).trim();
+			
+			if (isValid(vapesoscolombianos)) {
+				SettingsRun.getTestData().addParametersNotExist("Valor de la operación en pesos colombianos");
+				SettingsRun.getTestData().setParameter("Valor de la operación en pesos colombianos", vapesoscolombianos);
+			}
 			SettingsRun.getTestData().setParameter("Valor de la operación en pesos colombianos", vapesoscolombianos);
 
 		} else {
@@ -835,6 +856,12 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 
 		if (this.isDisplayed(cmpCostoServicio)) {
 			String costoServicio = this.getText(cmpCostoServicio).trim();
+			
+			if (isValid(costoServicio)) {
+				SettingsRun.getTestData().addParametersNotExist("Costo del servicio");
+				SettingsRun.getTestData().setParameter("Costo del servicio", costoServicio);
+			}
+			
 			SettingsRun.getTestData().setParameter("Costo del servicio", costoServicio);
 
 		} else {
@@ -843,6 +870,10 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 
 		if (this.isDisplayed(cmpIVAservicio)) {
 			String iVAservicio = this.getText(cmpIVAservicio).trim();
+			if (isValid(iVAservicio)) {
+				SettingsRun.getTestData().addParametersNotExist("IVA sobre costo del servicio");
+				SettingsRun.getTestData().setParameter("IVA sobre costo del servicio", iVAservicio);
+			}
 			SettingsRun.getTestData().setParameter("IVA sobre costo del servicio", iVAservicio);
 
 		} else {
@@ -851,6 +882,10 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 
 		if (this.isDisplayed(cmpValornetoarecibir)) {
 			String valornetoarecibir = this.getText(cmpValornetoarecibir).trim();
+			if (isValid(valornetoarecibir)) {
+				SettingsRun.getTestData().addParametersNotExist("Valor Neto a recibir");
+				SettingsRun.getTestData().setParameter("Valor Neto a recibir", valornetoarecibir);
+			}
 			SettingsRun.getTestData().setParameter("Valor Neto a recibir", valornetoarecibir);
 
 		} else {
@@ -871,14 +906,11 @@ public class PageRecibirTransferenciasInternacionales extends PageDivisas {
 	 * @param saldoOrigen
 	 * @throws Exception
 	 */
-	public void validacionSaldosStratus(String tipoCta, String numCta, boolean saldoOrigen) throws Exception {
+	public void validacionSaldosStratus(String tipoDocumento,String numeroDoc,String tipoCta, String numCta, boolean saldoOrigen) throws Exception {
 		if (DatosDavivienda.STRATUS != null) {
-			String tipoDocumento = SettingsRun.getTestData().getParameter("Tipo ID Empresa");
-			String numeroDoc = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
 			String saldoDis = null;
 			String saldoDisponible = null;
 			if (saldoOrigen) {
-				String servicio = SettingsRun.getTestData().getParameter("Servicio").trim();
 				saldoDis = this.getText(this.element(locSaldodisponible.replace("NUMCUENTA", DXCUtil.right(numCta, 4)).replace("TIPOCUENTA", tipoCta)));
 				saldoDisponible = saldoDis.replace("$ ", "").replace(".", "").replace(",", ".");
 			}

@@ -323,7 +323,8 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 	 * @throws Exception
 	 */
 
-	public String ModuloDocumetosYFormularios(String tipoPrueba) throws Exception {
+	public String ModuloDocumetosYFormularios(String tipoPrueba, String servicio, String fechaTx, String horaTx,
+			String moneda) throws Exception {
 		String msg = null;
 
 		msg = validarAlertDocuc();
@@ -335,7 +336,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 //		String tipoPrueba = SettingsRun.getTestData().getParameter("Tipo prueba").trim();
 
 		if (tipoPrueba.equals("Tx Pend Aprobación")) {
-			IralModuloDocumetosYFormularios();
+			IralModuloDocumetosYFormularios(tipoPrueba, servicio, fechaTx, horaTx, moneda);
 		}
 
 		contador = 0;
@@ -367,10 +368,10 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 	 * @return
 	 * @throws Exception
 	 */
-	public String IralModuloDocumetosYFormularios() throws Exception {
+	public String IralModuloDocumetosYFormularios(String tipoPrueba, String servicio, String fechaTx, String horaTx,
+			String moneda) throws Exception {
 
 		WebElement moduloDoc = null;
-		String documentoTx = null;
 		String msg = null;
 
 		this.switchToFrameDivisas();
@@ -397,8 +398,8 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 		} while (this.element(moduloDoc) == null || !moduloDoc.isDisplayed());
 
-
-		msg = obtenerNumeroTxDocumentoGeneral("Documentos y Formularios");
+		msg = obtenerNumeroTxDocumentoGeneral(tipoPrueba, servicio, "Documentos y Formularios", fechaTx, horaTx,
+				moneda);
 
 		if (isValid(msg) && msg.equals("Error: Documento no encontrado con tiempos ajustados."))
 			return msg;
@@ -440,7 +441,14 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 	public String DatosDocumetosYFormularios(String conceptosCambiario, String tipoOperacion,
 			String tipoDestinodelainversion, String opcionInversionId, String valorTx, String numeral1,
 			String valorNumeral1, String numCambiario2, String valorNumeral2, String valordeduciones,
-			String... cargarArchivo) throws Exception {
+			String cambiarConcepto, String conceptoAcambiar, String numeroDeposito,
+			String numeroFacturaoReferDeclaracion, String cambiarlistnumeralOperacion_Numeral1, String numeral1Acambiar,
+			String cambiarDatosDescripciondelaoperacion, String numerodelprestamooaval,
+			String nombredelacreedoroeldeudoroavalista, String nombredeldeudoroacreedorAvaladoobeneficiarioresidente,
+			String tipodeidentificacióndeldeudor, String numerodeidentificaciondeldeudor, String digitodeverificacion,
+			String monedaestipulada, String valormonedaestipulada, String tasadecambiomoneda,
+			String cambiarValornumeralcambiario1, String ValorNumeral1Camb, String validacionAdicionar,
+			String validacionDian, String... cargarArchivo) throws Exception {
 
 		WebElement listConceptodelatransferencia = null;
 
@@ -496,11 +504,10 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				}
 			}
 
-			String cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
+//			String cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
 
 			if (cambiarConcepto.equals("SI")) {
-				String conceptoAcambiar = SettingsRun.getTestData()
-						.getParameter("Concepto de la transferencia A Cambiar");
+//				String conceptoAcambiar = SettingsRun.getTestData().getParameter("Concepto de la transferencia A Cambiar");
 				conceptosCambiario = conceptoAcambiar;
 
 				msg = this.selectListItem(listConceptosCambiario, conceptoAcambiar);
@@ -680,21 +687,19 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 			return elementoSelecionado;
 		}
 
-		String numeroDeposito = SettingsRun.getTestData().getParameter("Número de depósito 1");
-		String numeroFacturaoReferDeclaracion = SettingsRun.getTestData().getParameter("Número de declaración 1");
+//		String numeroDeposito = SettingsRun.getTestData().getParameter("Número de depósito 1");
+//		String numeroFacturaoReferDeclaracion = SettingsRun.getTestData().getParameter("Número de declaración 1");
 
 		if (isValid(conceptosCambiario)) {
 
 			Evidence.save("Descripción de la operación");
 
-			String cambiarlistnumeralOperacion_Numeral1 = SettingsRun.getTestData()
-					.getParameter("Cambiar Numeral cambiario 1");
-			String numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
-			String cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
+//			String cambiarlistnumeralOperacion_Numeral1 = SettingsRun.getTestData().getParameter("Cambiar Numeral cambiario 1");
+//			String numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
+//			String cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
 
 			if (cambiarConcepto.equals("SI")) {
-				String conceptoAcambiar = SettingsRun.getTestData()
-						.getParameter("Concepto de la transferencia A Cambiar");
+//				String conceptoAcambiar = SettingsRun.getTestData().getParameter("Concepto de la transferencia A Cambiar");
 				conceptosCambiario = conceptoAcambiar;
 			}
 
@@ -961,7 +966,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 						if (cambiarlistnumeralOperacion_Numeral1.equals("SI")) {
 
-							numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
+//							numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
 
 							if (this.element(listNumeralOperacion_Numeral1) != null) {
 
@@ -1003,7 +1008,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 				if (cambiarlistnumeralOperacion_Numeral1.equals("SI")) {
 
-					numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
+//					numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
 
 					if (this.element(listNumeralOperacion_Numeral1) != null) {
 						msg = this.selectListItemExacto(listNumeralOperacion_Numeral1, numeral1Acambiar);
@@ -1021,7 +1026,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 				// ----------------[Descripción de la
 				// operaciónInversiones]--------------------------------
-				cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
+//				cambiarConcepto = SettingsRun.getTestData().getParameter("Cambiar Concepto de la transferencia");
 
 				if (cambiarConcepto.equals("NO")) {
 
@@ -1048,29 +1053,24 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 				if (conceptosCambiario.contains(Endeudamiento)) {
 
-					String cambiarDatosDescripciondelaoperacion = SettingsRun.getTestData()
-							.getParameter("Cambiar Datos Descripción de la operación");
+//					String cambiarDatosDescripciondelaoperacion = SettingsRun.getTestData().getParameter("Cambiar Datos Descripción de la operación");
 
-					String numerodelprestamooaval = SettingsRun.getTestData()
-							.getParameter("Número del préstamo o aval");
+//					String numerodelprestamooaval = SettingsRun.getTestData().getParameter("Número del préstamo o aval");
 
 					this.write(campInputNumerodelprestamooAval, numerodelprestamooaval);
 
-					String nombredelacreedoroeldeudoroavalista = SettingsRun.getTestData()
-							.getParameter("Nombre del acreedor o el deudor o avalista");
+//					String nombredelacreedoroeldeudoroavalista = SettingsRun.getTestData().getParameter("Nombre del acreedor o el deudor o avalista");
 
 					this.write(campInputNombreAcredorDeudorAvalista, nombredelacreedoroeldeudoroavalista);
 
 					if (cambiarDatosDescripciondelaoperacion.equals("SI")) {
 
-						String nombredeldeudoroacreedorAvaladoobeneficiarioresidente = SettingsRun.getTestData()
-								.getParameter("Nombre del deudor o acreedor / Avalado o beneficiario residente");
+//						String nombredeldeudoroacreedorAvaladoobeneficiarioresidente = SettingsRun.getTestData().getParameter("Nombre del deudor o acreedor / Avalado o beneficiario residente");
 
 						this.write(campInputdescripcionOperacion_NombreDeudorAcredor,
 								nombredeldeudoroacreedorAvaladoobeneficiarioresidente);
 
-						String tipodeidentificacióndeldeudor = SettingsRun.getTestData()
-								.getParameter("Tipo de identificación del deudor");
+//						String tipodeidentificacióndeldeudor = SettingsRun.getTestData().getParameter("Tipo de identificación del deudor");
 
 						msg = this.seleOption(campSeletListaTipoIdentificacion, tipodeidentificacióndeldeudor);
 
@@ -1085,14 +1085,13 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 							}
 						}
 
-						String numerodeidentificaciondeldeudor = SettingsRun.getTestData()
-								.getParameter("Número de identificación del deudor");
+//						String numerodeidentificaciondeldeudor = SettingsRun.getTestData().getParameter("Número de identificación del deudor");
 						this.write(campInputNumeroIdentificacion, numerodeidentificaciondeldeudor);
 
-						String digitodeverificacion = SettingsRun.getTestData().getParameter("Dígito de verificación");
+//						String digitodeverificacion = SettingsRun.getTestData().getParameter("Dígito de verificación");
 						this.write(campInputDigitoVerificacion, digitodeverificacion);
 
-						String monedaestipulada = SettingsRun.getTestData().getParameter("Moneda estipulada");
+//						String monedaestipulada = SettingsRun.getTestData().getParameter("Moneda estipulada");
 
 						msg = this.seleOption(campSeletListaMonedaEstipulada, monedaestipulada);
 
@@ -1107,12 +1106,11 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 							}
 						}
 
-						String valormonedaestipulada = SettingsRun.getTestData()
-								.getParameter("Valor moneda estipulada");
+//						String valormonedaestipulada = SettingsRun.getTestData().getParameter("Valor moneda estipulada");
 
 						this.write(campInputValorMoneda, valormonedaestipulada);
 
-						String tasadecambiomoneda = SettingsRun.getTestData().getParameter("Tasa de cambio moneda");
+//						String tasadecambiomoneda = SettingsRun.getTestData().getParameter("Tasa de cambio moneda");
 						this.write(campInputTasadeCambioMonedaEstipulada, tasadecambiomoneda);
 
 					} else {
@@ -1142,7 +1140,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 				if (cambiarlistnumeralOperacion_Numeral1.equals("SI")) {
 
-					numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
+//					numeral1Acambiar = SettingsRun.getTestData().getParameter("Numeral cambiario A Cambiar 1");
 
 					if (isElementInteractable(listNumeralOperacion_Numeral1)) {
 						msg = this.selectListItemExacto(listNumeralOperacion_Numeral1, numeral1Acambiar);
@@ -1189,7 +1187,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 			}
 
 			if (isElementInteractable(inputOperacion_NumeroDeposito)) {
-
 				if (!isValid(numeroDeposito)) {
 					Evidence.save("Se presento el Numero Deposito");
 					Reporter.reportEvent(Reporter.MIC_INFO,
@@ -1247,13 +1244,11 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				// Validacion Numeral
 				// 1-----------------------------------------------------------------------------------
 
-				String cambiarValornumeralcambiario1 = SettingsRun.getTestData()
-						.getParameter("Cambiar Valor numeral cambiario 1");
+//				String cambiarValornumeralcambiario1 = SettingsRun.getTestData().getParameter("Cambiar Valor numeral cambiario 1");
 
 				if (cambiarValornumeralcambiario1.equals("SI")) {
 
-					String ValorNumeral1Camb = SettingsRun.getTestData()
-							.getParameter("Valor numeral cambiario A Cambiar 1");
+//					String ValorNumeral1Camb = SettingsRun.getTestData().getParameter("Valor numeral cambiario A Cambiar 1");
 
 					if (isElementInteractable(inputValorMonedaGiro))
 						this.write(inputValorMonedaGiro, String.valueOf(ValorNumeral1Camb).replace(".", ","));
@@ -1345,14 +1340,12 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 					return msg;
 			}
 
-			String concepto = SettingsRun.getTestData().getParameter("Concepto de la transferencia A Cambiar");
+//			String concepto = SettingsRun.getTestData().getParameter("Concepto de la transferencia A Cambiar");
 
-			if (isValid(concepto) && !concepto.equals("4 - Inversiones internacionales")) {
+			if (isValid(conceptoAcambiar) && !conceptoAcambiar.equals("4 - Inversiones internacionales")) {
 
-				if (concepto.contains(Exportaciones))
+				if (conceptoAcambiar.contains(Exportaciones))
 					ValidacionDeduciones(numeroDeposito, numeroFacturaoReferDeclaracion, valordeduciones, valorTx);
-
-				String validacionAdicionar = SettingsRun.getTestData().getParameter("Validar Numerales");
 
 				if (isValid(validacionAdicionar) && !validacionAdicionar.equals("No Aplica")
 						&& !validacionAdicionar.equals("1")) {
@@ -1361,7 +1354,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 					if (isElementInteractable(inputOperacion_NumeroDeposito))
 						this.write(inputOperacion_NumeroDeposito, numeroDeposito);
 
-					ValidarNumeral(Integer.parseInt(validacionAdicionar));
+					ValidarNumeral(Integer.parseInt(validacionAdicionar), validacionAdicionar);
 
 				}
 			}
@@ -1378,9 +1371,9 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 		DXCUtil.wait(5);
 
-		String validacionDian = SettingsRun.getTestData().getParameter("Validacion - DIAN");
+//		String validacionDian = SettingsRun.getTestData().getParameter("Validacion - DIAN");
 
-		ValidacionDocumentosDIAN(Integer.parseInt(validacionDian));
+		ValidacionDocumentosDIAN(Integer.parseInt(validacionDian), validacionDian);
 
 		DXCUtil.wait(2);
 
@@ -1420,46 +1413,6 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 
 		return msg;
 	}
-
-// ============================================[findDocumentWithTime]===========================================================================
-
-//	/**
-//	 * Encuentra el numero de la Tx con la fecha y Hora si son necesarios
-//	 * 
-//	 * @param horaconvert
-//	 * @return el objeto en contrado o null
-//	 * @throws Exception
-//	 */
-//	public String findDocumentWithTime(String horaconvert) throws Exception {
-//		
-//		String moneda = SettingsRun.getTestData().getParameter("Tipo Moneda").trim();
-//		String beneficiario = SettingsRun.getTestData().getParameter("Ordenante / Nombre del beneficiario en el exterior");
-//		
-//		String documentoTx = "";
-//		String fechayHoraconver = "";
-//
-//		if (isValid(numAprova))
-//			documentoTx = numAprova;
-//
-//		if (isValid(horaconvert))
-//			fechayHoraconver = DXCUtil.convertirHoraSiPM(horaconvert);
-//
-//		try {
-//			DXCUtil.wait(1);
-//			
-//			String Obje = xpathNumDocumTxCon.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda).replace("DOCID", documentoTx);
-//			
-//			if (Obje != null && !isValid(documentoTx))
-//				numAprova = this.element(xpathNumDocumTxObt.replace("fechayhoraconvert", fechayHoraconver).replace("MONEDA", moneda)).getText();
-//			
-//			return Obje;
-//			
-//		} catch (Exception e) {
-//			
-//			return null;
-//		}
-//
-//	}
 
 // ============================================[validarAlertDocuc]===========================================================================	
 
@@ -2196,7 +2149,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 	 * @param num
 	 * @throws Exception
 	 */
-	public void ValidarNumeral(int num) throws Exception {
+	public void ValidarNumeral(int num, String validacionAdicionar) throws Exception {
 		int contadorVa = 1;
 		for (int i = 2; i <= num; i++) {
 			contadorVa++;
@@ -2229,7 +2182,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				String ValorMonedaEstipulada = SettingsRun.getTestData().getParameter("Valor moneda estipulada " + i);
 				String valorDeposito = SettingsRun.getTestData().getParameter("Número de depósito " + i);
 
-				String result = AdicionarNumeral(contadorVa, listNumeralId, inputValorMonedaId,
+				String result = AdicionarNumeral(contadorVa, listNumeralId, validacionAdicionar, inputValorMonedaId,
 						inputValorMonedaIdNegociacion, inputValorMonedaValorenUSD, inputNumeroDeclaracion,
 						inputNumeroDeposito, numeralACambiar, valorNumeralCambiar, valorDeclaracio, valorDeposito,
 						inputValorMonedaEstipulada, ValorMonedaEstipulada);
@@ -2258,15 +2211,16 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 	 * @return
 	 * @throws Exception
 	 */
-	public String AdicionarNumeral(int contadorVa, String listNumeralId, String inputValorMonedaId,
-			String inputValorMonedaIdNegociacion, String inputValorMonedaValorenUSD, String inputNumeroDeclaracio,
-			String inputNumeroDeposito, String numeralACambiar, String valorNumeralaCambiar, String valorDeclaracio,
-			String valorDeposito, String inputValorMonedaEstipulada, String ValorMonedaEstipulada) throws Exception {
+	public String AdicionarNumeral(int contadorVa, String listNumeralId, String validacionAdicionar,
+			String inputValorMonedaId, String inputValorMonedaIdNegociacion, String inputValorMonedaValorenUSD,
+			String inputNumeroDeclaracio, String inputNumeroDeposito, String numeralACambiar,
+			String valorNumeralaCambiar, String valorDeclaracio, String valorDeposito,
+			String inputValorMonedaEstipulada, String ValorMonedaEstipulada) throws Exception {
 
 		String elementoSelecionado = "";
 		String msg = "";
 
-		String validacionAdicionar = SettingsRun.getTestData().getParameter("Validar Numerales");
+//		String validacionAdicionar = SettingsRun.getTestData().getParameter("Validar Numerales");
 
 		if (contadorVa <= Integer.parseInt(validacionAdicionar)) {
 
@@ -2428,7 +2382,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 	 * @param num
 	 * @throws Exception
 	 */
-	public void ValidacionDocumentosDIAN(int num) throws Exception {
+	public void ValidacionDocumentosDIAN(int num, String validacionDian) throws Exception {
 
 		int contadorVa = 1;
 		for (int i = 0; i <= num; i++) {
@@ -2455,7 +2409,7 @@ public class PageDocumentos_Y_Formularios extends PageDivisas {
 				break; // Detener el ciclo si hay un error
 			}
 
-			String validacionDian = SettingsRun.getTestData().getParameter("Validacion - DIAN");
+//			String validacionDian = SettingsRun.getTestData().getParameter("Validacion - DIAN");
 			// Adicionar nuevos campos numeral
 			if (contadorVa <= Integer.parseInt(validacionDian)) {
 				this.click(By.xpath("//*[@id='addBtn']"));

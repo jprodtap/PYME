@@ -860,24 +860,28 @@ public class PagePortalPymes extends BasePageWeb {
 				}
 
 				String valor = getCellValue(celdas, mapHeaders, "Valor");
+				
 				if (valor != null && valor.contains("$")) {
-					valor = valor.replace("$", "").replace(",", ".").trim();
+					
+					
+					valor = valor.replace("$", "").replace(".", "").trim();
+					
 					if (valor.contains(",")) {
 						valor = valor.replace(",", ".").trim();
 					}
-					if (valor.contains(",")) {
-						valor = valor.replace(",", ".").trim();
-					}
-
-					int numPoints = 0;
-					for (char c : valor.toCharArray()) {
-						if (c == '.')
-							numPoints++;
-					}
-					if (numPoints >= 2) {
-						int pos = valor.indexOf(".");
-						valor = valor.substring(0, pos) + valor.substring(pos + 1);
-					}
+//					if (valor.contains(",")) {
+//						valor = valor.replace(",", ".").trim();
+//					}
+//
+//					int numPoints = 0;
+//					for (char c : valor.toCharArray()) {
+//						if (c == '.')
+//							numPoints++;
+//					}
+//					if (numPoints >= 2) {
+//						int pos = valor.indexOf(".");
+//						valor = valor.substring(0, pos) + valor.substring(pos + 1);
+//					}
 				}
 
 				// Guarda el resultado

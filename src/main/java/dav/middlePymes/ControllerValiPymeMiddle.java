@@ -185,7 +185,11 @@ public class ControllerValiPymeMiddle {
 	
 
 	public void ValidacionInformeTransInternacional() throws Exception {
-
-		pageInfoTransInter.InformeTransInter();
+		this.servicio = SettingsRun.getTestData().getParameter("Servicio").trim();
+		this.idEmpresa = SettingsRun.getTestData().getParameter("Numero ID Empresa").trim();
+		this.tipoIDUser = SettingsRun.getTestData().getParameter("Tipo Identificación").trim();
+		this.numIdUser = SettingsRun.getTestData().getParameter("Id usuario").trim();
+		
+		pageInfoTransInter.InformeTransInter(this.servicio,this.tipoIDUser,this.numIdUser,this.idEmpresa);
 	}
 }

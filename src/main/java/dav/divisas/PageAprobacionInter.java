@@ -56,7 +56,7 @@ public class PageAprobacionInter extends PageDivisas {
 	 * @return
 	 * @throws Exception
 	 */
-	public String inicioAprobaciones(boolean primeroGuardar) throws Exception {
+	public String inicioAprobaciones(String tipoPrueba,String servicio,String fecha,String hora,String moneda) throws Exception {
 		
 		String documentoTx = numAprova;
 		
@@ -73,7 +73,10 @@ public class PageAprobacionInter extends PageDivisas {
 		}
 
 		// Validaciones adicionales de campos y titulos en la ventana de aprobaciones
-		Reporter.reportEvent(Reporter.MIC_WARNING, "----------------TABLA INICIAL DE APROBACIONES------------------");
+		Reporter.write(" ");
+		Reporter.write("==========[TABLA INICIAL DE APROBACIONES]=======================================================================================================");
+		Reporter.write(" ");
+
 		Evidence.saveAllScreens("Registros Encontrados", this);
 
 		msg = assertElementExists(titulo, "Se encuentra el título de 'Aprobaciones'");
@@ -91,7 +94,7 @@ public class PageAprobacionInter extends PageDivisas {
 		
 		
 		if (!isValid(documentoTx)) 
-			documentoTx = obtenerNumeroTxDocumentoGeneral("Aprobaciones");
+			documentoTx = obtenerNumeroTxDocumentoGeneral(tipoPrueba,servicio,"Aprobaciones", fecha, hora, moneda);
 		
 		/*
 		 * Encuentra el registro por numero de documento Si encuentra el registro
@@ -109,8 +112,11 @@ public class PageAprobacionInter extends PageDivisas {
 			
 			if (this.element(xpathfilaLocator) != null) {
 				// Almacena el numero de Aprobacion de la tx
-				if (isValid(documentoTx))
+				if (isValid(documentoTx)) {
+					numAprova = documentoTx;
 					SettingsRun.getTestData().setParameter("Número Aprobación", documentoTx);
+					
+				}
 				
 				xpathcheckboxFila = checkboxFila.replace("I", String.valueOf(contador));
 
